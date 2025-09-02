@@ -3,7 +3,15 @@ package me.lofro.pelicano2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import me.lofro.pelicano2.server.commands.CommandRegistries;
+import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
+import net.minecraft.command.argument.ArgumentTypes;
+import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import me.lofro.pelicano2.client.ModClient;
@@ -34,6 +42,14 @@ public class Main implements ModInitializer {
 
         this.modServer = new ModServer(this);
         this.modClient = new ModClient();
+
+        ArgumentTypeRegistry.registerArgumentType(
+                new Identifier(ModConstants.MOD_ID, "audios"),
+                AudioArgumentType.class,
+                ConstantArgumentSerializer.of(AudioArgumentType::audio)
+        );
+
+        CommandRegistries.registerCommands();
     }
 
     /**
