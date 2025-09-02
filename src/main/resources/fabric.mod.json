@@ -1,36 +1,33 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "pelicano2",
 	"version": "${version}",
 
-	"name": "FabricModTemplate",
-	"description": "Basic mod template for Vermillion Productions modding environment.",
+	"name": "Planeta Pelicano 2",
+	"description": "Mod desarrollado para Planta Pelicano 2",
 	"authors": [
 		"zLofro"
 	],
-	"contact": {
-		"sources": "https://github.com/VermillionProductions/FabricModTemplate"
-	},
 
 	"license": "MIT",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/pelicano2/icon.png",
 
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"vermillion.productions.Main"
+			"me.lofro.pelicano2.Main"
 		],
 		"client": [
-			"vermillion.productions.client.ModClient"
+			"me.lofro.pelicano2.client.ModClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json"
+		"pelicano2.mixins.json"
 	],
 
 	"depends": {
-		"fabricloader": ">=0.15.10",
-		"minecraft": "~1.20.6",
+		"fabricloader": ">=0.14.21",
+		"minecraft": "~1.20.1",
 		"java": ">=21",
 		"fabric-api": "*"
 	},

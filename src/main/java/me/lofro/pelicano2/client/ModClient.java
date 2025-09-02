@@ -1,0 +1,12 @@
+package me.lofro.pelicano2.client;
+
+import net.fabricmc.api.ClientModInitializer;
+
+public class ModClient implements ClientModInitializer {
+
+    @Override
+    public void onInitializeClient() {
+
+    }
+
+}
