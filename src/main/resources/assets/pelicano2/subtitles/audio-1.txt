@@ -1,3 +1,6 @@
-¡Oye, tú! ¿Que haces por aquí merodeando alrededor de la estatua? Oh... espera... ¡¿Eres tú el de la estatua?! Pero que carajos... | 10;
-Ok, déjame tomarme un respiro... Está bien, primero que nada permíteme presentarme, mi nombre es Igris y soy el jefe de caballería de Sylmoria. Te hablaré un poco sobre este lugar. | 14;
-
+¡Oye, tú! ¿Que haces por aquí merodeando alrededor de la estatua? | 04;
+Oh... espera... ¡¿Eres tú el de la estatua?! Pero que carajos...  | 06;
+Ok, déjame tomarme un respiro... | 04;
+Está bien primero que nada permíteme presentarme, mi nombre es Igris | 05;
+y soy el jefe de caballería de Sylmoria. | 03;
+Te hablaré un poco sobre este lugar. | 03;
