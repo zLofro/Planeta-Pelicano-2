@@ -1,6 +1,7 @@
 package me.lofro.pelicano2.server.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.server.audio.Audios;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
@@ -14,12 +15,16 @@ public class PelicanoCommand {
                 CommandManager.literal("pelicano")
                         .then(CommandManager.literal("audio")
                                 .then(CommandManager.argument("audio", AudioArgumentType.audio())
-                                        .executes(commandContext -> playAudio(AudioArgumentType.getAudio(commandContext, "audio")))))
+                                        .then(CommandManager.argument("showSubtitles", BoolArgumentType.bool())
+                                                .then(CommandManager.argument("playAudio", BoolArgumentType.bool())
+                                                        .executes(commandContext -> playAudio(AudioArgumentType.getAudio(commandContext, "audio"),
+                                                                BoolArgumentType.getBool(commandContext, "showSubtitles"),
+                                                                BoolArgumentType.getBool(commandContext, "playAudio")))))))
         );
     }
 
-    public static int playAudio(Audios audio) {
-        boolean executed = Main.getInstance().serverManager().getAudioManager().playAudio(audio, true, false);
+    public static int playAudio(Audios audio, boolean showSubtitles, boolean playSound) {
+        boolean executed = Main.getInstance().serverManager().getAudioManager().playAudio(audio, true, true);
 
         return executed ? 1 : 0;
     }

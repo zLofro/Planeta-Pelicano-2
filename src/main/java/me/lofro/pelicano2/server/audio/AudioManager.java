@@ -65,7 +65,9 @@ public class AudioManager {
         }
 
         server.getPlayerManager().getPlayerList().forEach(player -> {
-            if (playAudio) player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, audioName)), SoundCategory.MASTER, 1, 1);
+            if (playAudio) {
+                player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, audioName)), SoundCategory.MASTER, 1, 1);
+            }
 
             if (showSubtitles) {
                 lines.forEach(lineData -> {

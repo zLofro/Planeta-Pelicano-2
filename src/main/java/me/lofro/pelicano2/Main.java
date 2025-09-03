@@ -3,6 +3,7 @@ package me.lofro.pelicano2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import me.lofro.pelicano2.server.audio.soundevents.PelicanoSoundEvents;
 import me.lofro.pelicano2.server.commands.CommandRegistries;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import net.fabricmc.api.ModInitializer;
@@ -42,6 +43,8 @@ public class Main implements ModInitializer {
 
         this.modServer = new ModServer(this);
         this.modClient = new ModClient();
+
+        PelicanoSoundEvents.register();
 
         ArgumentTypeRegistry.registerArgumentType(
                 new Identifier(ModConstants.MOD_ID, "audios"),
