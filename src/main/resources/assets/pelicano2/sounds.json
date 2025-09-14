@@ -3,5 +3,40 @@
     "sounds": [
       "pelicano2:audio-1"
     ]
+  },
+  "audio-2": {
+    "sounds": [
+      "pelicano2:audio-2"
+    ]
+  },
+  "audio-3": {
+    "sounds": [
+      "pelicano2:audio-3"
+    ]
+  },
+  "audio-4": {
+    "sounds": [
+      "pelicano2:audio-4"
+    ]
+  },
+  "audio-5": {
+    "sounds": [
+      "pelicano2:audio-5"
+    ]
+  },
+  "audio-6": {
+    "sounds": [
+      "pelicano2:audio-6"
+    ]
+  },
+  "audio-7": {
+    "sounds": [
+      "pelicano2:audio-7"
+    ]
+  },
+  "audio-8": {
+    "sounds": [
+      "pelicano2:audio-8"
+    ]
   }
 }

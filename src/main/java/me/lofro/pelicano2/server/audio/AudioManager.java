@@ -103,6 +103,16 @@ public class AudioManager {
         return true;
     }
 
+    public void stopAllAudios() {
+        if (!playingAudio) {return;}
+
+        server.getPlayerManager().getPlayerList().forEach(AudioManager::stopAllSounds);
+
+        TimedActionBar.actionBarQueue.clear();
+
+        playingAudio = false;
+    }
+
     public static void stopSound(ServerPlayerEntity player, Identifier id, SoundCategory category) {
         StopSoundS2CPacket packet = new StopSoundS2CPacket(id, category);
         player.networkHandler.sendPacket(packet);

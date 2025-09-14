@@ -6,6 +6,7 @@ import lombok.Getter;
 import me.lofro.pelicano2.server.audio.soundevents.PelicanoSoundEvents;
 import me.lofro.pelicano2.server.commands.CommandRegistries;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
+import me.lofro.pelicano2.server.entity.EntityRegistries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.minecraft.command.argument.ArgumentTypes;
@@ -51,6 +52,8 @@ public class Main implements ModInitializer {
                 AudioArgumentType.class,
                 ConstantArgumentSerializer.of(AudioArgumentType::audio)
         );
+
+        EntityRegistries.register();
 
         CommandRegistries.registerCommands();
     }

@@ -1,5 +1,6 @@
-Sylmoria es un país con una lamentable escacez de recursos, Luego de la desaparición del rey... | 06;
+Sylmoria es un país con una lamentable escasez de recursos, | 04;
+luego de la desaparición del rey... | 02;
 El país entró en un ciclo de desesperación... y con justa razón, quiero decir- | 05;
-Nuestro rey un día simplemente desapareció y ya no teníamos a quien seguir. | 05;
-Ahora que tienes un poco más de contexto- | 02;
-Voy a pedirte que me acompañes, ya que debo mostrarte algo importante. | 05;
+Nuestro rey un día simplemente desapareció y ya no teníamos a quien seguir. | 06;
+Ahora que tienes un poco más de contexto- | 03;
+Voy a pedirte que me acompañes, ya que debo mostrarte algo importante. | 04;

@@ -30,6 +30,10 @@ public class ModServer {
             this.audioManager = new AudioManager(this);
         }));
         ServerLifecycleEvents.SERVER_STOPPED.register((server -> {
+            audioManager.stopAllAudios();
+
+            audioManager = null;
+
             serverExecutorService.shutdownNow();
             serverExecutorService = null;
         }));
