@@ -92,9 +92,7 @@ public class AudioManager {
     public boolean stopAudio(Audios audio) {
         if (!playingAudio) {return false;}
 
-        server.getPlayerManager().getPlayerList().forEach(player -> {
-            stopSound(player, new Identifier(ModConstants.MOD_ID, audio.audioName), SoundCategory.MASTER);
-        });
+        server.getPlayerManager().getPlayerList().forEach(player -> stopSound(player, new Identifier(ModConstants.MOD_ID, audio.audioName), SoundCategory.MASTER));
 
         TimedActionBar.actionBarQueue.clear();
 
