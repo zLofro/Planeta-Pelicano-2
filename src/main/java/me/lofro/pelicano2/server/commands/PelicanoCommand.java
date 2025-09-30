@@ -5,15 +5,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.lofro.pelicano2.Main;
-import me.lofro.pelicano2.client.screens.Mission;
-import me.lofro.pelicano2.client.screens.MissionLogScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.audio.Audios;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import me.lofro.pelicano2.server.global.utils.identity.IdentityUtils;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
@@ -26,7 +23,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Collection;
-import java.util.List;
 
 public class PelicanoCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
@@ -64,6 +60,19 @@ public class PelicanoCommand {
                             if (player != null) {
                                 PacketByteBuf buf = PacketByteBufs.create();
                                 ServerPlayNetworking.send(player, PacketIDS.OPEN_BITACORA, buf);
+                            }
+
+                            return Command.SINGLE_SUCCESS;
+                        }));
+
+        literalArgumentBuilder
+                .then(CommandManager.literal("mission")
+                        .executes(commandContext -> {
+                            ServerPlayerEntity player = commandContext.getSource().getPlayer();
+
+                            if (player != null) {
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                ServerPlayNetworking.send(player, PacketIDS.OPEN_MISSION, buf);
                             }
 
                             return Command.SINGLE_SUCCESS;

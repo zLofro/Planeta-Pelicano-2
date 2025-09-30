@@ -5,4 +5,5 @@ import net.minecraft.util.Identifier;
 
 public class PacketIDS {
     public static final Identifier OPEN_BITACORA = new Identifier(ModConstants.MOD_ID, "open_bitacora");
+    public static final Identifier OPEN_MISSION = new Identifier(ModConstants.MOD_ID, "open_mission");
 }

@@ -1,4 +1,4 @@
-package me.lofro.pelicano2.client.screens;
+package me.lofro.pelicano2.client.screens.updates;
 
 import me.lofro.pelicano2.global.utils.ModConstants;
 import net.minecraft.client.gui.DrawContext;
@@ -8,16 +8,16 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
-public class MissionLogScreen extends Screen {
+public class UpdatesLogScreen extends Screen {
 
     // --- Textures ---
     private static final Identifier BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/background.png");
     private static final Identifier SLIDE = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/slide.png");
     private static final Identifier SLIDE_BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/slide_background.png");
-    private static final Identifier MISSION_COMPLETED = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/mission_completed.png");
-    private static final Identifier MISSION_PENDING = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/mission_pending.png");
+    private static final Identifier MISSION_COMPLETED = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_seen.png");
+    private static final Identifier MISSION_PENDING = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_not_seen.png");
 
-    private final List<Mission> missions;
+    private final List<UpdatesInfo> updatesInfos;
     private int scrollOffset = 0;
 
     // Layout
@@ -26,9 +26,9 @@ public class MissionLogScreen extends Screen {
     private final int rowHeight = 40;
     private final int scrollHeight = 194;
 
-    public MissionLogScreen(List<Mission> missions) {
+    public UpdatesLogScreen(List<UpdatesInfo> updatesInfos) {
         super(Text.literal("Bitácora de Kaleb"));
-        this.missions = missions;
+        this.updatesInfos = updatesInfos;
     }
 
     @Override
@@ -55,9 +55,9 @@ public class MissionLogScreen extends Screen {
         int yOffset = -(scrollOffset % rowHeight);
         int visibleCount = Math.floorDiv(scrollHeight, rowHeight) + 1;
 
-        for (int i = 0; i < visibleCount && (firstVisible + i) < missions.size(); i++) {
-            Mission mission = missions.get(firstVisible + i);
-            Identifier texture = mission.completed ? MISSION_COMPLETED : MISSION_PENDING;
+        for (int i = 0; i < visibleCount && (firstVisible + i) < updatesInfos.size(); i++) {
+            UpdatesInfo updatesInfo = updatesInfos.get(firstVisible + i);
+            Identifier texture = updatesInfo.completed ? MISSION_COMPLETED : MISSION_PENDING;
 
             int missionX = x + 20;
             int rowY = scrollY + yOffset + (i * rowHeight);
@@ -65,12 +65,12 @@ public class MissionLogScreen extends Screen {
             // dibujar solo si la fila entra dentro del área visible
             if (rowY + missionHeight > scrollY && rowY < scrollY + scrollHeight) {
                 context.drawTexture(texture, missionX, rowY, 0, 0, missionWidth, missionHeight, missionWidth, missionHeight);
-                context.drawText(textRenderer, mission.title, missionX + 20, rowY + 15, 0x444444, false);
+                context.drawText(textRenderer, updatesInfo.title, missionX + 20, rowY + 15, 0x444444, false);
             }
         }
 
         // --- Scroll bar ---
-        int contentHeight = missions.size() * rowHeight;
+        int contentHeight = updatesInfos.size() * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
         if (maxScroll > 0) {
@@ -88,7 +88,7 @@ public class MissionLogScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        int contentHeight = missions.size() * rowHeight;
+        int contentHeight = updatesInfos.size() * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
         int scrollStep = 8; // píxeles por tick de scroll (ajustable para suavidad)
