@@ -60,6 +60,14 @@ public class ModEntities {
                     .build()
     );
 
+    public static final EntityType<GuideMissionsEntity> GUIDE_MISSIONS = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "guide_missions"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, GuideMissionsEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.9f, 2.3f))
+                    .build()
+    );
+
     public static final EntityType<GnomeBossEntity> GNOME_BOSS = Registry.register(
             Registries.ENTITY_TYPE,
             new Identifier(ModConstants.MOD_ID, "gnome_boss"),

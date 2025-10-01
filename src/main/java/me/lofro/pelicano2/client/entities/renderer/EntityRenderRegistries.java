@@ -13,6 +13,7 @@ public class EntityRenderRegistries {
         EntityRendererRegistry.register(ModEntities.NICTE_MISSIONS, NicteMissionsRenderer::new);
         EntityRendererRegistry.register(ModEntities.GNOME, GnomeRenderer::new);
         EntityRendererRegistry.register(ModEntities.GUIDE, GuideRenderer::new);
+        EntityRendererRegistry.register(ModEntities.GUIDE_MISSIONS, GuideMissionsRenderer::new);
         EntityRendererRegistry.register(ModEntities.GNOME_BOSS, GnomeBossRenderer::new);
         EntityRendererRegistry.register(ModEntities.NPC_ENTITY, NPCEntityRenderer::new);
     }

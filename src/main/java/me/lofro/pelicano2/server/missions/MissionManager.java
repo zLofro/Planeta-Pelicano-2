@@ -8,6 +8,7 @@ import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.ModServer;
 import me.lofro.pelicano2.server.data.types.MissionData;
 import me.lofro.pelicano2.server.entity.ModEntities;
+import me.lofro.pelicano2.server.entity.entities.GuideMissionsEntity;
 import me.lofro.pelicano2.server.entity.entities.NPCEntity;
 import me.lofro.pelicano2.server.entity.entities.NicteMissionsEntity;
 import me.lofro.pelicano2.server.missions.missions.Missions;
@@ -86,24 +87,32 @@ public class MissionManager implements Restorable {
             NPCEntity npc = ModEntities.NPC_ENTITY.create(world);
 
             if (npc != null) {
-                npc.setMission(mission);
-
                 npc.setPosition(location);
 
                 world.spawnEntity(npc);
+
+                npc.setMission(mission);
             }
         } else {
             if (mission.getNpcTexture().getPath().equals("guide")) {
-                // TODO SPAWNEAR AL GUIA DE LOS COJONES.
+                GuideMissionsEntity guide = ModEntities.GUIDE_MISSIONS.create(world);
+
+                if (guide != null) {
+                    guide.setPosition(location);
+
+                    world.spawnEntity(guide);
+
+                    guide.setMission(mission);
+                }
             } else {
                 NicteMissionsEntity nicte = ModEntities.NICTE_MISSIONS.create(world);
 
                 if (nicte != null) {
-                    nicte.setMission(mission);
-
                     nicte.setPosition(location);
 
                     world.spawnEntity(nicte);
+
+                    nicte.setMission(mission);
                 }
             }
         }

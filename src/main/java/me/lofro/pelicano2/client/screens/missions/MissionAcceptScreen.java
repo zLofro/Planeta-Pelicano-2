@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MissionAcceptScreen extends Screen {
+    //TODO ARREGLAR TAMAÑOS GUI 4 Y CENTRAR BOTON EN GUI SIN GIF
+
     private static Identifier SOURCE_IMAGE;
 
     // Información del sprite sheet
@@ -339,10 +341,12 @@ public class MissionAcceptScreen extends Screen {
 
     @Override
     public void tick() {
-        tickCounter++;
-        if (tickCounter >= TICKS_PER_FRAME) {
-            tickCounter = 0;
-            currentFrame = (currentFrame + 1) % FRAME_COUNT;
+        if (!mission.isNPC()) {
+            tickCounter++;
+            if (tickCounter >= TICKS_PER_FRAME) {
+                tickCounter = 0;
+                currentFrame = (currentFrame + 1) % FRAME_COUNT;
+            }
         }
         super.tick();
     }
@@ -356,4 +360,16 @@ public class MissionAcceptScreen extends Screen {
     public void removed() {
         super.removed();
     }
+
+    @Override
+    public void close() {
+        pagesLoaded = false;
+
+        PAGE_IDS.clear();
+
+        PAGE_HEIGHTS.clear();
+
+        super.close();
+    }
+
 }

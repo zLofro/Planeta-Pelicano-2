@@ -12,6 +12,7 @@ public class EntityRegistries {
         FabricDefaultAttributeRegistry.register(ModEntities.NICTE_MISSIONS, NicteMissionsEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.GNOME, GnomeEntity.createGnomeAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.GUIDE, GuideEntity.createGuideAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.GUIDE_MISSIONS, GuideMissionsEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.GNOME_BOSS, GnomeBossEntity.createGnomeBossAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.NPC_ENTITY, NPCEntity.createAttributes());
     }

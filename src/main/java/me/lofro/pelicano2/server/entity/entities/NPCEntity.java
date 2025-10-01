@@ -1,9 +1,7 @@
 package me.lofro.pelicano2.server.entity.entities;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.lofro.pelicano2.Main;
-import me.lofro.pelicano2.global.utils.ModConstants;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.minecraft.entity.EntityType;
@@ -28,14 +26,8 @@ import java.util.UUID;
 public class NPCEntity extends PathAwareEntity {
     private static final TrackedData<String> MISSION = DataTracker.registerData(NPCEntity.class, TrackedDataHandlerRegistry.STRING);
 
-    private @Getter Identifier texture;
-
-    private final Missions mission;
-
     public NPCEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
-        this.mission = getMission();
-        this.texture = mission.getNpcTexture();
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -57,6 +49,8 @@ public class NPCEntity extends PathAwareEntity {
             MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
             UUID playerUUID = player.getUuid();
 
+            Missions mission = getMission();
+
             if (!missionManager.completed(playerUUID, mission) && !missionManager.active(playerUUID, mission)) {
                 ServerPlayerEntity serverPlayerEntity = Main.getInstance().serverManager().minecraftServer().getPlayerManager().getPlayer(playerUUID);
                 Main.getInstance().serverManager().getMissionManager().openAssignScreen(serverPlayerEntity, mission);
@@ -70,7 +64,10 @@ public class NPCEntity extends PathAwareEntity {
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
-        this.dataTracker.startTracking(MISSION, Missions.values()[0].name());
+
+        Missions mission = Missions.values()[0];
+
+        this.dataTracker.startTracking(MISSION, mission.name());
     }
 
     public void setMission(Missions mission) {
@@ -79,6 +76,11 @@ public class NPCEntity extends PathAwareEntity {
 
     public Missions getMission() {
         return Missions.valueOf(this.dataTracker.get(MISSION));
+    }
+
+    public Identifier getTexture() {
+        Missions mission = getMission();
+        return mission.getNpcTexture();
     }
 
     @Override

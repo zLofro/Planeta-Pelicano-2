@@ -36,11 +36,8 @@ public class NicteMissionsEntity extends MobEntity implements GeoEntity {
 
     private static final TrackedData<String> MISSION = DataTracker.registerData(NicteMissionsEntity.class, TrackedDataHandlerRegistry.STRING);
 
-    private final Missions mission;
-
     public NicteMissionsEntity(EntityType<? extends MobEntity> entityType, World world) {
         super(entityType, world);
-        this.mission = getMission();
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -61,6 +58,8 @@ public class NicteMissionsEntity extends MobEntity implements GeoEntity {
         if (!this.getWorld().isClient) {
             MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
             UUID playerUUID = player.getUuid();
+
+            Missions mission = getMission();
 
             if (!missionManager.completed(playerUUID, mission) && !missionManager.active(playerUUID, mission)) {
                 ServerPlayerEntity serverPlayerEntity = Main.getInstance().serverManager().minecraftServer().getPlayerManager().getPlayer(playerUUID);
@@ -87,20 +86,6 @@ public class NicteMissionsEntity extends MobEntity implements GeoEntity {
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putString("Mission", this.getMission().name());
-    }
-
-    @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        if (nbt.contains("Mission")) {
-            this.setMission(Missions.valueOf(nbt.getString("Mission")));
-        }
-    }
-
-    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "movementController", 0, this::movementPredicate));
     }
@@ -113,6 +98,20 @@ public class NicteMissionsEntity extends MobEntity implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putString("Mission", this.getMission().name());
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.contains("Mission")) {
+            this.setMission(Missions.valueOf(nbt.getString("Mission")));
+        }
     }
 
 }

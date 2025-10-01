@@ -11,6 +11,14 @@ import java.util.List;
 
 @Getter
 public enum Missions {
+    UN_LUGAR_PARA_DESCANSAR(List.of(Items.CAKE), Text.of("Un lugar para descansar"), Text.of("""
+            Un héroe siempre necesita un refugio seguro, un lugar para guardar lo valioso y descansar sin temor. Sin hogar, hasta el más fuerte se pierde.
+            
+            Construye tu propia casa y asegúrate de que esté lista para habitar.
+            
+            Al regresar conmigo, recibirás una valiosa recompensa por haber levantado tu refugio."""),
+            false,
+            new Identifier(ModConstants.MOD_ID, "guide")),
     EL_SECRETO_DE_LAS_MARIPOSAS(List.of(Items.CAKE), Text.of("El secreto de las mariposas"), Text.of("""
             Desde hace tiempo colecciono mariposas; para mí son tesoros vivos. Cada una, con sus colores y formas únicas, guarda un secreto de la naturaleza.
             
