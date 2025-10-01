@@ -36,6 +36,14 @@ public class ModEntities {
                     .build()
     );
 
+    public static final EntityType<NicteMissionsEntity> NICTE_MISSIONS = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "nicte_missions"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, NicteMissionsEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.8f, 2f))
+                    .build()
+    );
+
     public static final EntityType<GnomeEntity> GNOME = Registry.register(
             Registries.ENTITY_TYPE,
             new Identifier(ModConstants.MOD_ID, "gnome"),
@@ -57,6 +65,14 @@ public class ModEntities {
             new Identifier(ModConstants.MOD_ID, "gnome_boss"),
             FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, GnomeBossEntity::new)
                     .dimensions(EntityDimensions.fixed(1f, 1.2f))
+                    .build()
+    );
+
+    public static final EntityType<NPCEntity> NPC_ENTITY = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "npc"),
+            FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, NPCEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.6f, 1.8f)) // tamaño como un jugador
                     .build()
     );
 

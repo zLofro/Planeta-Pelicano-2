@@ -2,6 +2,8 @@ package me.lofro.pelicano2.server;
 
 import lombok.Getter;
 import me.lofro.pelicano2.server.audio.AudioManager;
+import me.lofro.pelicano2.server.data.DataManager;
+import me.lofro.pelicano2.server.missions.MissionManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 import me.lofro.pelicano2.Main;
@@ -15,9 +17,11 @@ public class ModServer {
 
     private MinecraftServer minecraftServer;
 
-    private @Getter ScheduledExecutorService serverExecutorService;
-
+    private @Getter DataManager dataManager;
     private @Getter AudioManager audioManager;
+    private @Getter MissionManager missionManager;
+
+    private @Getter ScheduledExecutorService serverExecutorService;
 
     public ModServer(final Main main) {
         this.main = main;
@@ -25,11 +29,25 @@ public class ModServer {
         ServerLifecycleEvents.SERVER_STARTED.register((server -> {
             this.minecraftServer = server;
 
+            try {
+                this.dataManager = new DataManager(this);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             this.serverExecutorService = Executors.newSingleThreadScheduledExecutor();
 
             this.audioManager = new AudioManager(this);
+
+            this.missionManager = new MissionManager(this);
         }));
         ServerLifecycleEvents.SERVER_STOPPED.register((server -> {
+            try {
+                dataManager.save();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             audioManager.stopAllAudios();
 
             audioManager = null;

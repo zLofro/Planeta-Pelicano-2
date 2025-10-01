@@ -5,8 +5,10 @@ import me.lofro.pelicano2.client.screens.missions.MissionAcceptScreen;
 import me.lofro.pelicano2.client.screens.updates.UpdatesInfo;
 import me.lofro.pelicano2.client.screens.updates.UpdatesLogScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
+import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public class ModClient implements ClientModInitializer {
     public void onInitializeClient() {
         EntityRenderRegistries.register();
 
-        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_BITACORA, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_BITACORA_SCREEN_S2C, (client, handler, buf, responseSender) -> {
             client.execute(() -> {
                 client.setScreen(new UpdatesLogScreen(List.of(
                         new UpdatesInfo("Recolecta 10 manzanas", false),
@@ -33,11 +35,18 @@ public class ModClient implements ClientModInitializer {
             });
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_MISSION, (client, handler, buf, responseSender) -> {
-            client.execute(() -> {
-                client.setScreen(new MissionAcceptScreen(Text.of("MISION TEST"), Text.of("DESCRIPCION")));
-            });
-        });
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_MISSION_SCREEN_S2C,
+                (client, handler, buf, responseSender) -> {
+                    Missions mission = buf.readEnumConstant(Missions.class);
+
+                    client.execute(() -> {
+                        if (mission != null) {
+                            client.setScreen(new MissionAcceptScreen(mission));
+                        } else {
+                            throw new RuntimeException("Error cargando la mision del packet.");
+                        }
+                    });
+                });
     }
 
 }

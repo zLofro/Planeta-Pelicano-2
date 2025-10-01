@@ -8,12 +8,15 @@ import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.audio.Audios;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
+import me.lofro.pelicano2.server.commands.arguments.MissionArgumentType;
 import me.lofro.pelicano2.server.global.utils.identity.IdentityUtils;
+import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
+import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketByteBuf;
@@ -21,6 +24,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.Collection;
 
@@ -59,7 +64,7 @@ public class PelicanoCommand {
 
                             if (player != null) {
                                 PacketByteBuf buf = PacketByteBufs.create();
-                                ServerPlayNetworking.send(player, PacketIDS.OPEN_BITACORA, buf);
+                                ServerPlayNetworking.send(player, PacketIDS.OPEN_BITACORA_SCREEN_S2C, buf);
                             }
 
                             return Command.SINGLE_SUCCESS;
@@ -67,16 +72,12 @@ public class PelicanoCommand {
 
         literalArgumentBuilder
                 .then(CommandManager.literal("mission")
-                        .executes(commandContext -> {
-                            ServerPlayerEntity player = commandContext.getSource().getPlayer();
-
-                            if (player != null) {
-                                PacketByteBuf buf = PacketByteBufs.create();
-                                ServerPlayNetworking.send(player, PacketIDS.OPEN_MISSION, buf);
-                            }
-
-                            return Command.SINGLE_SUCCESS;
-                        }));
+                        .then(CommandManager.literal("spawnNPC")
+                                .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .then(CommandManager.argument("location", Vec3ArgumentType.vec3())
+                                                .executes(commandContext -> spawnNPC(MissionArgumentType.getMission(commandContext, "mission"),
+                                                        commandContext.getSource().getWorld(),
+                                                        Vec3ArgumentType.getVec3(commandContext, "location")))))));
 
         dispatcher.register(literalArgumentBuilder);
     }
@@ -91,4 +92,11 @@ public class PelicanoCommand {
         players.forEach(player -> IdentityUtils.equipIdentity(player, identityId, true));
         return players.size();
     }
+
+    public static int spawnNPC(Missions mission, World world, Vec3d location) {
+        Main.getInstance().serverManager().getMissionManager().spawnNPC(mission, world, location);
+
+        return 0;
+    }
+
 }
