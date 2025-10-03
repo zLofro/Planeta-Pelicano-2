@@ -2,13 +2,15 @@ package me.lofro.pelicano2.client.screens.updates;
 
 //TODO TEST
 
-public class UpdatesInfo {
-    public final String title;
-    public final boolean completed;
+import net.minecraft.text.Text;
 
-    public UpdatesInfo(String title, boolean completed) {
-        this.title = title;
-        this.completed = completed;
+public class UpdatesInfo {
+    public final Text title;
+    public final boolean seen;
+
+    public UpdatesInfo(String title, boolean seen) {
+        this.title = Text.of(title);
+        this.seen = seen;
     }
 
 }

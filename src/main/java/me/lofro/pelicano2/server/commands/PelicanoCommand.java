@@ -10,6 +10,7 @@ import me.lofro.pelicano2.server.audio.Audios;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import me.lofro.pelicano2.server.commands.arguments.MissionArgumentType;
 import me.lofro.pelicano2.server.global.utils.identity.IdentityUtils;
+import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -28,6 +29,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PelicanoCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
@@ -77,7 +81,35 @@ public class PelicanoCommand {
                                         .then(CommandManager.argument("location", Vec3ArgumentType.vec3())
                                                 .executes(commandContext -> spawnNPC(MissionArgumentType.getMission(commandContext, "mission"),
                                                         commandContext.getSource().getWorld(),
-                                                        Vec3ArgumentType.getVec3(commandContext, "location")))))));
+                                                        Vec3ArgumentType.getVec3(commandContext, "location"))))))
+                        .then(CommandManager.literal("missions")
+                                .executes(commandContext -> {
+                                    ServerPlayerEntity player = commandContext.getSource().getPlayer();
+
+                                    if (player != null) {
+                                        MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
+
+                                        Map<Missions, Boolean> playerMissions = new HashMap<>();
+
+                                        if (!missionManager.getMissionData().getActiveMissions().isEmpty()) {
+                                            missionManager.getMissionData().getActiveMissions().get(player.getUuid()).forEach(mission -> {
+                                                playerMissions.put(mission, false);
+                                            });
+                                        }
+
+                                        if (!missionManager.getMissionData().getCompletedMissions().isEmpty()) {
+                                            missionManager.getMissionData().getCompletedMissions().get(player.getUuid()).forEach(mission -> {
+                                                playerMissions.put(mission, true);
+                                            });
+                                        }
+
+                                        PacketByteBuf buf = PacketByteBufs.create();
+                                        buf.writeMap(playerMissions, PacketByteBuf::writeEnumConstant, PacketByteBuf::writeBoolean);
+                                        ServerPlayNetworking.send(player, PacketIDS.OPEN_MISSION_VIEW_SCREEN_S2C, buf);
+                                    }
+
+                                    return Command.SINGLE_SUCCESS;
+                                })));
 
         dispatcher.register(literalArgumentBuilder);
     }
@@ -96,7 +128,7 @@ public class PelicanoCommand {
     public static int spawnNPC(Missions mission, World world, Vec3d location) {
         Main.getInstance().serverManager().getMissionManager().spawnNPC(mission, world, location);
 
-        return 0;
+        return 1;
     }
 
 }

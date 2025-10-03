@@ -1,17 +1,8 @@
 package me.lofro.pelicano2.client;
 
 import me.lofro.pelicano2.client.entities.renderer.EntityRenderRegistries;
-import me.lofro.pelicano2.client.screens.missions.MissionAcceptScreen;
-import me.lofro.pelicano2.client.screens.updates.UpdatesInfo;
-import me.lofro.pelicano2.client.screens.updates.UpdatesLogScreen;
-import me.lofro.pelicano2.global.network.PacketIDS;
-import me.lofro.pelicano2.server.missions.missions.Missions;
+import me.lofro.pelicano2.client.network.receivers.ClientReceivers;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-
-import java.util.List;
 
 public class ModClient implements ClientModInitializer {
 
@@ -19,34 +10,7 @@ public class ModClient implements ClientModInitializer {
     public void onInitializeClient() {
         EntityRenderRegistries.register();
 
-        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_BITACORA_SCREEN_S2C, (client, handler, buf, responseSender) -> {
-            client.execute(() -> {
-                client.setScreen(new UpdatesLogScreen(List.of(
-                        new UpdatesInfo("Recolecta 10 manzanas", false),
-                        new UpdatesInfo("Habla con el aldeano", true),
-                        new UpdatesInfo("Explora el bosque", false),
-                        new UpdatesInfo("Encuentra el tesoro", true),
-                        new UpdatesInfo("Testeo jaja", false),
-                        new UpdatesInfo("me estoy volviendo loco", false),
-                        new UpdatesInfo("Comete un pimiento", false),
-                        new UpdatesInfo("?????", true),
-                        new UpdatesInfo("ultima mision", true)
-                )));
-            });
-        });
-
-        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_MISSION_SCREEN_S2C,
-                (client, handler, buf, responseSender) -> {
-                    Missions mission = buf.readEnumConstant(Missions.class);
-
-                    client.execute(() -> {
-                        if (mission != null) {
-                            client.setScreen(new MissionAcceptScreen(mission));
-                        } else {
-                            throw new RuntimeException("Error cargando la mision del packet.");
-                        }
-                    });
-                });
+        ClientReceivers.register();
     }
 
 }

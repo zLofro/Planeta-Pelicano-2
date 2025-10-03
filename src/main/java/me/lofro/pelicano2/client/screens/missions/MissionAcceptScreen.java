@@ -105,7 +105,7 @@ public class MissionAcceptScreen extends Screen {
             default -> 6;
         };
 
-        int x = !mission.isNPC() ? (this.width / 2) + (this.width / proportion) : (this.width / 2);
+        int x = !mission.isNPC() ? (this.width / 2) + (this.width / proportion) : guiScale != 4 ? (this.width / 2) - 10 * proportion : (this.width / 2) - 8 * proportion; // ajustes de pantalla. no se ni que hice aqui
         int y = (this.height / 2) + (this.height / proportion);
 
         Identifier acceptTexture = new Identifier(ModConstants.MOD_ID, "textures/gui/missions/accept_button.png");
@@ -281,8 +281,8 @@ public class MissionAcceptScreen extends Screen {
         var textProportion = switch (guiScale) {
             case 1 -> 5.5F;
             case 2 -> 3;
-            case 3 -> 2;
-            default -> 1.75F;
+            case 3 -> 1.75F;
+            default -> 1.5F;
         };
 
         Pair<Integer, Integer> textSeparator = switch (guiScale) {

@@ -18,7 +18,8 @@ public enum Missions {
             
             Al regresar conmigo, recibirás una valiosa recompensa por haber levantado tu refugio."""),
             false,
-            new Identifier(ModConstants.MOD_ID, "guide")),
+            new Identifier(ModConstants.MOD_ID, "guide"),
+            Text.of("Construye tu propia casa y asegúrate de que esté habitable.")),
     EL_SECRETO_DE_LAS_MARIPOSAS(List.of(Items.CAKE), Text.of("El secreto de las mariposas"), Text.of("""
             Desde hace tiempo colecciono mariposas; para mí son tesoros vivos. Cada una, con sus colores y formas únicas, guarda un secreto de la naturaleza.
             
@@ -26,7 +27,8 @@ public enum Missions {
             
             Recibirás un regalo especial, algo que puede serte muy útil en tu viaje."""),
             false,
-            new Identifier(ModConstants.MOD_ID, "nicte")),
+            new Identifier(ModConstants.MOD_ID, "nicte"),
+            Text.of("Viaja a los campos y captura 30 mariposas con la red.")),
     ALAS_DE_SOMBRA(List.of(Items.CAKE), Text.of("Alas de sombra"), Text.of("""
             Un vecino lejano está siendo atacado por buitres hambrientos. Su casa, que alguna vez fue tranquila, ahora está rodeada por estas aves que no le dan descanso.
             
@@ -34,20 +36,24 @@ public enum Missions {
             
             Al volver conmigo, obtendrás un obsequio en agradecimiento por tu ayuda."""),
             true,
-            new Identifier(ModConstants.MOD_ID, "textures/entity/npc/anastasia_white.png"));
+            new Identifier(ModConstants.MOD_ID, "textures/entity/npc/anastasia_white.png"),
+            Text.of("Elimina 20 buitres de la zona.")
+            );
 
     private final List<Item> reward;
     private final Text title;
     private final Text description;
     private final boolean isNPC;
     private final Identifier npcTexture;
+    private final Text summary;
 
-    Missions(List<Item> reward, Text title, Text description, boolean isNPC, Identifier npcTexture) {
+    Missions(List<Item> reward, Text title, Text description, boolean isNPC, Identifier npcTexture, Text summary) {
         this.reward = reward;
         this.title = title;
         this.description = description;
         this.isNPC = isNPC;
         this.npcTexture = npcTexture;
+        this.summary = summary;
     }
 
 }

@@ -3,6 +3,7 @@ package me.lofro.pelicano2.client.screens.updates;
 import me.lofro.pelicano2.global.utils.ModConstants;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -14,10 +15,10 @@ public class UpdatesLogScreen extends Screen {
     private static final Identifier BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/background.png");
     private static final Identifier SLIDE = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/slide.png");
     private static final Identifier SLIDE_BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/slide_background.png");
-    private static final Identifier MISSION_COMPLETED = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_seen.png");
-    private static final Identifier MISSION_PENDING = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_not_seen.png");
+    private static final Identifier UPDATE_SEEN = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_seen.png");
+    private static final Identifier UPDATE_NOT_SEEN = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_not_seen.png");
 
-    private final List<UpdatesInfo> updatesInfos;
+    private final List<UpdatesInfo> updatesInfo;
     private int scrollOffset = 0;
 
     // Layout
@@ -26,9 +27,9 @@ public class UpdatesLogScreen extends Screen {
     private final int rowHeight = 40;
     private final int scrollHeight = 194;
 
-    public UpdatesLogScreen(List<UpdatesInfo> updatesInfos) {
+    public UpdatesLogScreen(List<UpdatesInfo> updatesInfo) {
         super(Text.literal("Bitácora de Kaleb"));
-        this.updatesInfos = updatesInfos;
+        this.updatesInfo = updatesInfo;
     }
 
     @Override
@@ -46,49 +47,67 @@ public class UpdatesLogScreen extends Screen {
         int scrollWidth = 18;
         context.drawTexture(SLIDE_BACKGROUND, scrollX, scrollY, 0, 0, scrollWidth, scrollHeight, scrollWidth, scrollHeight);
 
-        // --- Missions ---
-        int missionWidth = 223;
-        int missionHeight = 37;
+        // --- Updates ---
+        int updateWidth = 223;
+        int updateHeight = 37;
 
         // Calculo de qué fila es la primera visible y el offset parcial
         int firstVisible = scrollOffset / rowHeight;
         int yOffset = -(scrollOffset % rowHeight);
         int visibleCount = Math.floorDiv(scrollHeight, rowHeight) + 1;
 
-        for (int i = 0; i < visibleCount && (firstVisible + i) < updatesInfos.size(); i++) {
-            UpdatesInfo updatesInfo = updatesInfos.get(firstVisible + i);
-            Identifier texture = updatesInfo.completed ? MISSION_COMPLETED : MISSION_PENDING;
+        for (int i = 0; i < visibleCount && (firstVisible + i) < updatesInfo.size(); i++) {
+            UpdatesInfo updatesInfo = this.updatesInfo.get(firstVisible + i);
+            Identifier texture = updatesInfo.seen ? UPDATE_SEEN : UPDATE_NOT_SEEN;
 
-            int missionX = x + 20;
+            int updateX = x + 20;
             int rowY = scrollY + yOffset + (i * rowHeight);
 
-            // dibujar solo si la fila entra dentro del área visible
-            if (rowY + missionHeight > scrollY && rowY < scrollY + scrollHeight) {
-                context.drawTexture(texture, missionX, rowY, 0, 0, missionWidth, missionHeight, missionWidth, missionHeight);
-                context.drawText(textRenderer, updatesInfo.title, missionX + 20, rowY + 15, 0x444444, false);
+            if (rowY + updateHeight > scrollY && rowY < scrollY + scrollHeight) {
+                context.drawTexture(texture, updateX, rowY, 0, 0, updateWidth, updateHeight, updateWidth, updateHeight);
+
+                int textX = updateX + 20;
+                int textY = rowY + 10;
+                int maxTextWidth = updateWidth - 40;
+
+                List<OrderedText> lines = textRenderer.wrapLines(updatesInfo.title, maxTextWidth);
+
+                for (int j = 0; j < Math.min(2, lines.size()); j++) {
+                    OrderedText line = lines.get(j);
+
+                    context.getMatrices().push();
+                    float scale = 0.9f;
+                    context.getMatrices().scale(scale, scale, 1.0f);
+
+                    int drawX = (int) (textX / scale);
+                    int drawY = (int) ((textY + j * (textRenderer.fontHeight + 2)) / scale);
+
+                    context.drawText(textRenderer, line, drawX, drawY, 0x444444, false);
+                    context.getMatrices().pop();
+                }
             }
         }
 
-        // --- Scroll bar ---
-        int contentHeight = updatesInfos.size() * rowHeight;
+        // --- Scroll bar (siempre visible) ---
+        int contentHeight = updatesInfo.size() * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
-        if (maxScroll > 0) {
-            int scrollbarWidth = 10;
-            int scrollbarHeight = 28;
-            int scrollbarRange = (scrollHeight - scrollbarHeight) - 8;
-            int scrollbarY = scrollY + 4 + (scrollOffset * scrollbarRange / maxScroll);
-            int scrollbarX = scrollX + 4;
+        int scrollbarWidth = 10;
+        int scrollbarHeight = 28;
+        int scrollbarRange = (scrollHeight - scrollbarHeight) - 8;
 
-            context.drawTexture(SLIDE, scrollbarX, scrollbarY, 0, 0, scrollbarWidth, scrollbarHeight, scrollbarWidth, scrollbarHeight);
-        }
+        // si no hay scroll, lo dejamos arriba fijo
+        int scrollbarY = scrollY + 4 + (maxScroll == 0 ? 0 : (scrollOffset * scrollbarRange / maxScroll));
+        int scrollbarX = scrollX + 4;
+
+        context.drawTexture(SLIDE, scrollbarX, scrollbarY, 0, 0, scrollbarWidth, scrollbarHeight, scrollbarWidth, scrollbarHeight);
 
         super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        int contentHeight = updatesInfos.size() * rowHeight;
+        int contentHeight = updatesInfo.size() * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
         int scrollStep = 8; // píxeles por tick de scroll (ajustable para suavidad)
