@@ -7,8 +7,8 @@
 				"texture_width": 64,
 				"texture_height": 64,
 				"visible_bounds_width": 3,
-				"visible_bounds_height": 4.5,
-				"visible_bounds_offset": [0, 1.75, 0]
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
 			},
 			"bones": [
 				{
@@ -228,16 +228,6 @@
 					"cubes": [
 						{"origin": [-4, 24, -4], "size": [8, 8, 8], "uv": [0, 0]},
 						{"origin": [-4, 24, -4], "size": [8, 8, 8], "inflate": 0.5, "uv": [32, 0]}
-					]
-				},
-				{
-					"name": "sign",
-					"parent": "Head",
-					"pivot": [0, 39.40013, -0.05116],
-					"cubes": [
-						{"origin": [-0.90421, 37.71534, -1.05116], "size": [1.1, 7, 2], "pivot": [-0.40421, 41.21534, -0.05116], "rotation": [0, 0, -2.5], "uv": [56, 21]},
-						{"origin": [-0.19579, 37.71534, -1.05116], "size": [1.1, 7, 2], "pivot": [0.40421, 41.21534, -0.05116], "rotation": [0, 0, 2.5], "uv": [56, 21], "mirror": true},
-						{"origin": [-0.9, 34.81534, -1.05116], "size": [1.8, 1.9, 2], "uv": [57, 31]}
 					]
 				},
 				{

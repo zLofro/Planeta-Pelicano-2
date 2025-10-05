@@ -718,15 +718,10 @@
 							"easing": "easeInOutSine"
 						}
 					}
-				},
-				"sign": {
-					"scale": {
-						"vector": [0, 0, 0]
-					}
 				}
 			}
 		},
-		"crounch": {
+		"crouch": {
 			"loop": true,
 			"bones": {
 				"root": {
@@ -794,7 +789,7 @@
 				}
 			}
 		},
-		"crounch_walk": {
+		"crouch_walk": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
@@ -1259,19 +1254,6 @@
 				"sign": {
 					"scale": {
 						"vector": [0, 0, 0]
-					}
-				}
-			}
-		},
-		"idle_sign": {
-			"loop": true,
-			"bones": {
-				"sign": {
-					"rotation": {
-						"vector": [0, "0+query.anim_time *100", 0]
-					},
-					"position": {
-						"vector": [0, "0+math.cos(query.anim_time *200) *1", 0]
 					}
 				}
 			}

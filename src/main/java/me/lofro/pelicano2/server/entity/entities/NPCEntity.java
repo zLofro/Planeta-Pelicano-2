@@ -21,10 +21,20 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animatable.instance.SingletonAnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.UUID;
 
-public class NPCEntity extends PathAwareEntity {
+public class NPCEntity extends PathAwareEntity implements GeoEntity {
+    private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
+
     private static final TrackedData<String> MISSION = DataTracker.registerData(NPCEntity.class, TrackedDataHandlerRegistry.STRING);
 
     public NPCEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
@@ -103,6 +113,34 @@ public class NPCEntity extends PathAwareEntity {
         if (nbt.contains("Mission")) {
             this.setMission(Missions.valueOf(nbt.getString("Mission")));
         }
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "movementController", 0, this::movementPredicate));
+    }
+
+    private <E extends GeoEntity> PlayState movementPredicate(AnimationState<E> state) {
+        if (this.isInSneakingPose() && !this.handSwinging) {
+            if (state.isMoving()) {
+                state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_walk"));
+            } else {
+                state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_idle"));
+            }
+            return PlayState.CONTINUE;
+        } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("run"));
+            return PlayState.CONTINUE;
+        } else if (!this.handSwinging) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+            return PlayState.CONTINUE;
+        }
+        return PlayState.STOP;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
 }
