@@ -5,13 +5,13 @@ import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -31,26 +31,33 @@ import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.UUID;
 
-public class NicteMissionsEntity extends MobEntity implements GeoEntity {
+public class NicteMissionsEntity extends PathAwareEntity implements GeoEntity {
     private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
 
     private static final TrackedData<String> MISSION = DataTracker.registerData(NicteMissionsEntity.class, TrackedDataHandlerRegistry.STRING);
 
-    public NicteMissionsEntity(EntityType<? extends MobEntity> entityType, World world) {
+    public NicteMissionsEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return PathAwareEntity.createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D);
+        return PathAwareEntity.createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25);
+    }
+
+    @Override
+    protected void initGoals() {
+        super.initGoals();
+
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new EscapeDangerGoal(this, 1.25));
+        this.goalSelector.add(6, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.add(8, new LookAroundGoal(this));
     }
 
     @Override
     public boolean damage(DamageSource source, float amount) {
         return false;
-    }
-
-    @Override
-    public void tickMovement() {
     }
 
     @Override
@@ -91,8 +98,21 @@ public class NicteMissionsEntity extends MobEntity implements GeoEntity {
     }
 
     private <E extends GeoEntity> PlayState movementPredicate(AnimationState<E> state) {
-        state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-        return PlayState.CONTINUE;
+        if (this.isInSneakingPose() && !this.handSwinging) {
+            if (state.isMoving()) {
+                state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_move"));
+            } else {
+                state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_idle"));
+            }
+            return PlayState.CONTINUE;
+        } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
+            return PlayState.CONTINUE;
+        } else if (!this.handSwinging) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+            return PlayState.CONTINUE;
+        }
+        return PlayState.STOP;
     }
 
     @Override

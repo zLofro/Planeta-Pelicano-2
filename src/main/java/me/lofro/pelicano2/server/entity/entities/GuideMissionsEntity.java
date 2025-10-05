@@ -4,6 +4,7 @@ import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -30,17 +31,17 @@ import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.UUID;
 
-public class GuideMissionsEntity extends MobEntity implements GeoEntity {
+public class GuideMissionsEntity extends PathAwareEntity implements GeoEntity {
     private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
 
     private static final TrackedData<String> MISSION = DataTracker.registerData(GuideMissionsEntity.class, TrackedDataHandlerRegistry.STRING);
 
-    public GuideMissionsEntity(EntityType<? extends MobEntity> entityType, World world) {
+    public GuideMissionsEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return PathAwareEntity.createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D);
+        return PathAwareEntity.createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25);
     }
 
     @Override
@@ -49,7 +50,14 @@ public class GuideMissionsEntity extends MobEntity implements GeoEntity {
     }
 
     @Override
-    public void tickMovement() {
+    protected void initGoals() {
+        super.initGoals();
+
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new EscapeDangerGoal(this, 1.25));
+        this.goalSelector.add(6, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.add(8, new LookAroundGoal(this));
     }
 
     @Override
@@ -90,8 +98,21 @@ public class GuideMissionsEntity extends MobEntity implements GeoEntity {
     }
 
     private <E extends GeoEntity> PlayState movementPredicate(AnimationState<E> state) {
-        state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-        return PlayState.CONTINUE;
+        if (this.isInSneakingPose() && !this.handSwinging) {
+            if (state.isMoving()) {
+                state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_move"));
+            } else {
+                state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_idle"));
+            }
+            return PlayState.CONTINUE;
+        } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
+            return PlayState.CONTINUE;
+        } else if (!this.handSwinging) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+            return PlayState.CONTINUE;
+        }
+        return PlayState.STOP;
     }
 
     @Override

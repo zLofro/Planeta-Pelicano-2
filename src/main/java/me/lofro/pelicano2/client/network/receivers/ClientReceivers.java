@@ -1,17 +1,20 @@
 package me.lofro.pelicano2.client.network.receivers;
 
+import me.lofro.pelicano2.client.ModClient;
 import me.lofro.pelicano2.client.screens.missions.MissionAcceptScreen;
 import me.lofro.pelicano2.client.screens.missions.MissionViewScreen;
 import me.lofro.pelicano2.client.screens.updates.UpdatesInfo;
 import me.lofro.pelicano2.client.screens.updates.UpdatesLogScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
+import me.lofro.pelicano2.server.entity.entities.GuideMissionsEntity;
+import me.lofro.pelicano2.server.entity.entities.NicteMissionsEntity;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketByteBuf;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClientReceivers {
 
@@ -52,6 +55,41 @@ public class ClientReceivers {
                 }
             });
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.UPDATE_CLIENT_MISSION_DATA_S2C, (client, handler, buf, responseSender) -> {
+            List<Missions> assignedMissions = buf.readCollection(ArrayList::new, buf2 -> buf2.readEnumConstant(Missions.class));
+
+            ModClient.getClientMissionData().setAssignedMissions(assignedMissions);
+
+            ClientWorld clientWorld = client.world;
+
+            /*if (clientWorld != null) {
+                for (Entity entity : clientWorld.getEntities()) {
+                    if (entity instanceof GuideMissionsEntity || entity instanceof NicteMissionsEntity) {
+                        clientWorld.removeEntity(entity.getId(), Entity.RemovalReason.DISCARDED);
+                        clientWorld.addEntity(entity.getId(), entity);
+                    }
+                }
+            }*/
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.ADD_TO_CLIENT_MISSION_DATA, (client, handler, buf, responseSender) -> {
+            Missions mission = buf.readEnumConstant(Missions.class);
+
+            ModClient.getClientMissionData().getAssignedMissions().add(mission);
+
+            ClientWorld clientWorld = client.world;
+
+            /*if (clientWorld != null) {
+                for (Entity entity : clientWorld.getEntities()) {
+                    if (entity instanceof GuideMissionsEntity || entity instanceof NicteMissionsEntity) {
+                        clientWorld.removeEntity(entity.getId(), Entity.RemovalReason.DISCARDED);
+                        clientWorld.addEntity(entity.getId(), entity);
+                    }
+                }
+            }*/
+        });
+
     }
 
 }

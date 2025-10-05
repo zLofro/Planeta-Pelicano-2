@@ -9,4 +9,7 @@ public class PacketIDS {
     public static final Identifier OPEN_MISSION_VIEW_SCREEN_S2C = new Identifier(ModConstants.MOD_ID, "open_mission_view");
 
     public static final Identifier ACCEPT_MISSION_C2S = new Identifier(ModConstants.MOD_ID, "accept_mission_c2s");
+
+    public static final Identifier UPDATE_CLIENT_MISSION_DATA_S2C = new Identifier(ModConstants.MOD_ID, "update_client_mission_data");
+    public static final Identifier ADD_TO_CLIENT_MISSION_DATA = new Identifier(ModConstants.MOD_ID, "add_to_client_mission_data");
 }

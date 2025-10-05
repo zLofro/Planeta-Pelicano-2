@@ -120,7 +120,6 @@ public class MissionAcceptScreen extends Screen {
                     PlayerEntity player = MinecraftClient.getInstance().player;
                     if (player != null) {
                         PacketByteBuf packetByteBuf = PacketByteBufs.create();
-                        packetByteBuf.writeUuid(player.getUuid());
                         packetByteBuf.writeEnumConstant(mission);
                         ClientPlayNetworking.send(PacketIDS.ACCEPT_MISSION_C2S, packetByteBuf);
                     }
