@@ -20,6 +20,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MissionManager implements Restorable {
@@ -32,6 +34,26 @@ public class MissionManager implements Restorable {
         this.modServer = modServer;
 
         this.restore(modServer.getDataManager().getMissionData());
+    }
+
+    public void openViewScreen(ServerPlayerEntity player) {
+        Map<Missions, Boolean> playerMissions = new HashMap<>();
+
+        if (!missionData.getActiveMissions().isEmpty() && missionData.getActiveMissions().get(player.getUuid()) != null) {
+            missionData.getActiveMissions().get(player.getUuid()).forEach(mission -> {
+                playerMissions.put(mission, false);
+            });
+        }
+
+        if (!missionData.getCompletedMissions().isEmpty() && missionData.getCompletedMissions().get(player.getUuid()) != null) {
+            missionData.getCompletedMissions().get(player.getUuid()).forEach(mission -> {
+                playerMissions.put(mission, true);
+            });
+        }
+
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeMap(playerMissions, PacketByteBuf::writeEnumConstant, PacketByteBuf::writeBoolean);
+        ServerPlayNetworking.send(player, PacketIDS.OPEN_MISSION_VIEW_SCREEN_S2C, buf);
     }
 
     public void openAssignScreen(ServerPlayerEntity player, Missions mission) {

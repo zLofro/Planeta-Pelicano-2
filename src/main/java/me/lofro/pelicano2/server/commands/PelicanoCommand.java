@@ -29,9 +29,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PelicanoCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
@@ -89,23 +86,7 @@ public class PelicanoCommand {
                                     if (player != null) {
                                         MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
 
-                                        Map<Missions, Boolean> playerMissions = new HashMap<>();
-
-                                        if (!missionManager.getMissionData().getActiveMissions().isEmpty()) {
-                                            missionManager.getMissionData().getActiveMissions().get(player.getUuid()).forEach(mission -> {
-                                                playerMissions.put(mission, false);
-                                            });
-                                        }
-
-                                        if (!missionManager.getMissionData().getCompletedMissions().isEmpty()) {
-                                            missionManager.getMissionData().getCompletedMissions().get(player.getUuid()).forEach(mission -> {
-                                                playerMissions.put(mission, true);
-                                            });
-                                        }
-
-                                        PacketByteBuf buf = PacketByteBufs.create();
-                                        buf.writeMap(playerMissions, PacketByteBuf::writeEnumConstant, PacketByteBuf::writeBoolean);
-                                        ServerPlayNetworking.send(player, PacketIDS.OPEN_MISSION_VIEW_SCREEN_S2C, buf);
+                                        missionManager.openViewScreen(player);
                                     }
 
                                     return Command.SINGLE_SUCCESS;

@@ -1,6 +1,7 @@
 package me.lofro.pelicano2.server.networking;
 
 import me.lofro.pelicano2.Main;
+import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
@@ -17,22 +18,43 @@ import java.util.List;
 public class ServerReceivers {
 
     public static void registerServerReceivers() {
-        ServerPlayNetworking.registerGlobalReceiver(PacketIDS.ACCEPT_MISSION_C2S,
-                (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
+        ServerPlayNetworking.registerGlobalReceiver(PacketIDS.ACCEPT_MISSION_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
+            MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
+
+            Missions mission = packetByteBuf.readEnumConstant(Missions.class);
+
+            if (mission != null) {
+                missionManager.assign(mission, serverPlayerEntity.getUuid());
+
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeEnumConstant(mission);
+                ServerPlayNetworking.send(serverPlayerEntity, PacketIDS.ADD_TO_CLIENT_MISSION_DATA, buf);
+
+                serverPlayerEntity.sendMessage(Text.of("Misión " + mission.getTitle().getString() + " aceptada."));
+            }
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(PacketIDS.CLICK_SELECTION_ICON_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
+            SelectionScreen.Buttons button = packetByteBuf.readEnumConstant(SelectionScreen.Buttons.class);
+
+            switch (button) {
+                case UPDATES -> {
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    ServerPlayNetworking.send(serverPlayerEntity, PacketIDS.OPEN_BITACORA_SCREEN_S2C, buf);
+                }
+                case MISSIONS -> {
                     MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
 
-                    Missions mission = packetByteBuf.readEnumConstant(Missions.class);
-
-                    if (mission != null) {
-                        missionManager.assign(mission, serverPlayerEntity.getUuid());
-
-                        PacketByteBuf buf = PacketByteBufs.create();
-                        buf.writeEnumConstant(mission);
-                        ServerPlayNetworking.send(serverPlayerEntity, PacketIDS.ADD_TO_CLIENT_MISSION_DATA, buf);
-
-                        serverPlayerEntity.sendMessage(Text.of("Misión " + mission.getTitle().getString() + " aceptada."));
-                    }
-                });
+                    missionManager.openViewScreen(serverPlayerEntity);
+                }
+                case SKILLS -> {
+                    //TODO
+                }
+                case BOSSES -> {
+                    //TODO
+                }
+            }
+        });
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayerEntity player = handler.player;

@@ -17,6 +17,8 @@ public class ModClient implements ClientModInitializer {
         clientMissionData = new ClientMissionData();
 
         ClientReceivers.register();
+
+        KeyBinds.register();
     }
 
 }

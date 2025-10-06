@@ -1,17 +1,17 @@
 package me.lofro.pelicano2.client.network.receivers;
 
+import me.lofro.pelicano2.client.KeyBinds;
 import me.lofro.pelicano2.client.ModClient;
 import me.lofro.pelicano2.client.screens.missions.MissionAcceptScreen;
 import me.lofro.pelicano2.client.screens.missions.MissionViewScreen;
+import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
 import me.lofro.pelicano2.client.screens.updates.UpdatesInfo;
 import me.lofro.pelicano2.client.screens.updates.UpdatesLogScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
-import me.lofro.pelicano2.server.entity.entities.GuideMissionsEntity;
-import me.lofro.pelicano2.server.entity.entities.NicteMissionsEntity;
 import me.lofro.pelicano2.server.missions.missions.Missions;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketByteBuf;
 
 import java.util.*;
@@ -90,6 +90,13 @@ public class ClientReceivers {
             }*/
         });
 
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (KeyBinds.OPEN_CUSTOM_SCREEN.wasPressed()) {
+                if (client.player != null) {
+                    client.execute(() -> client.setScreen(new SelectionScreen()));
+                }
+            }
+        });
     }
 
 }
