@@ -3,6 +3,8 @@ package me.lofro.pelicano2.client.screens.updates;
 import me.lofro.pelicano2.global.utils.ModConstants;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -10,6 +12,8 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class UpdatesLogScreen extends Screen {
+
+    private ClientPlayerEntity player;
 
     // --- Textures ---
     private static final Identifier BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/background.png");
@@ -27,9 +31,13 @@ public class UpdatesLogScreen extends Screen {
     private final int rowHeight = 40;
     private final int scrollHeight = 194;
 
-    public UpdatesLogScreen(List<UpdatesInfo> updatesInfo) {
+    public UpdatesLogScreen(List<UpdatesInfo> updatesInfo, ClientPlayerEntity player) {
         super(Text.literal("Bitácora de Kaleb"));
         this.updatesInfo = updatesInfo;
+
+        this.player = player;
+
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "open_kaleb")), 1.0F, 1.0F);
     }
 
     @Override
@@ -54,7 +62,10 @@ public class UpdatesLogScreen extends Screen {
         // Calculo de qué fila es la primera visible y el offset parcial
         int firstVisible = scrollOffset / rowHeight;
         int yOffset = -(scrollOffset % rowHeight);
-        int visibleCount = Math.floorDiv(scrollHeight, rowHeight) + 1;
+        int visibleCount = (int) Math.ceil((double) scrollHeight / (rowHeight));
+
+        int clipTop = scrollY + rowHeight / 2;
+        int clipBottom = scrollY + scrollHeight - rowHeight / 2;
 
         for (int i = 0; i < visibleCount && (firstVisible + i) < updatesInfo.size(); i++) {
             UpdatesInfo updatesInfo = this.updatesInfo.get(firstVisible + i);
@@ -63,7 +74,7 @@ public class UpdatesLogScreen extends Screen {
             int updateX = x + 20;
             int rowY = scrollY + yOffset + (i * rowHeight);
 
-            if (rowY + updateHeight > scrollY && rowY < scrollY + scrollHeight) {
+            if (rowY + updateHeight > clipTop && rowY < clipBottom) {
                 context.drawTexture(texture, updateX, rowY, 0, 0, updateWidth, updateHeight, updateWidth, updateHeight);
 
                 int textX = updateX + 20;
@@ -110,7 +121,7 @@ public class UpdatesLogScreen extends Screen {
         int contentHeight = updatesInfo.size() * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
-        int scrollStep = 8; // píxeles por tick de scroll (ajustable para suavidad)
+        int scrollStep = 10; // píxeles por tick de scroll (ajustable para suavidad)
         scrollOffset = Math.max(0, Math.min(scrollOffset - (int) amount * scrollStep, maxScroll));
 
         return true;
@@ -140,5 +151,7 @@ public class UpdatesLogScreen extends Screen {
         if (this.client != null) {
             this.client.mouse.lockCursor();
         }
+
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "close_kaleb")), 1.0F, 1.0F);
     }
 }

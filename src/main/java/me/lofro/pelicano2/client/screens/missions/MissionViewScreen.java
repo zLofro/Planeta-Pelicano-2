@@ -1,10 +1,11 @@
 package me.lofro.pelicano2.client.screens.missions;
 
-import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.global.utils.ModConstants;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MissionViewScreen extends Screen {
+
+    private ClientPlayerEntity player;
 
     // --- Textures ---
     private static final Identifier BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/missions/mission_view_background.png");
@@ -31,9 +34,13 @@ public class MissionViewScreen extends Screen {
     private final int rowHeight = 40;
     private final int scrollHeight = 194;
 
-    public MissionViewScreen(Map<Missions, Boolean> playerMissions) {
+    public MissionViewScreen(Map<Missions, Boolean> playerMissions, ClientPlayerEntity player) {
         super(Text.literal("Missions"));
         this.playerMissions = new HashMap<>(playerMissions);
+
+        this.player = player;
+
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "open_missions")), 1.0F, 1.0F);
     }
 
     @Override
@@ -57,9 +64,12 @@ public class MissionViewScreen extends Screen {
 
         int firstVisible = scrollOffset / rowHeight;
         int yOffset = -(scrollOffset % rowHeight);
-        int visibleCount = Math.floorDiv(scrollHeight, rowHeight) + 1;
+        int visibleCount = (int) Math.ceil((double) scrollHeight / (rowHeight));
 
         List<Missions> playerMissionList = this.playerMissions.keySet().stream().toList();
+
+        int clipTop = scrollY + rowHeight / 2;
+        int clipBottom = scrollY + scrollHeight - rowHeight / 2;
 
         for (int i = 0; i < visibleCount && (firstVisible + i) < playerMissions.size(); i++) {
             Missions mission = playerMissionList.get(firstVisible + i);
@@ -68,7 +78,8 @@ public class MissionViewScreen extends Screen {
             int missionX = x + 20;
             int rowY = scrollY + yOffset + (i * rowHeight);
 
-            if (rowY + missionHeight > scrollY && rowY < scrollY + scrollHeight) {
+            // aplica clipping medio
+            if (rowY + missionHeight > clipTop && rowY < clipBottom) {
                 context.drawTexture(texture, missionX, rowY, 0, 0, missionWidth, missionHeight, missionWidth, missionHeight);
 
                 int textX = missionX + 20;
@@ -115,7 +126,7 @@ public class MissionViewScreen extends Screen {
         int contentHeight = playerMissions.keySet().size() * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
-        int scrollStep = 8;
+        int scrollStep = 10;
         scrollOffset = Math.max(0, Math.min(scrollOffset - (int) amount * scrollStep, maxScroll));
 
         return true;
@@ -129,5 +140,11 @@ public class MissionViewScreen extends Screen {
     @Override
     public boolean shouldPause() {
         return false;
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "close_mission_screen")), 1.0F, 1.0F);
     }
 }

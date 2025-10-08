@@ -38,5 +38,35 @@
     "sounds": [
       "pelicano2:audio-8"
     ]
+  },
+  "close_kaleb" : {
+    "sounds": [
+      "pelicano2:gui/close_kaleb"
+    ]
+  },
+  "close_mission_screen" : {
+    "sounds": [
+      "pelicano2:gui/close_mission_screen"
+    ]
+  },
+  "complete_mission" : {
+    "sounds": [
+      "pelicano2:gui/complete_mission"
+    ]
+  },
+  "open_kaleb" : {
+    "sounds": [
+      "pelicano2:gui/open_kaleb"
+    ]
+  },
+  "open_missions" : {
+    "sounds": [
+      "pelicano2:gui/open_missions"
+    ]
+  },
+  "open_selection" : {
+    "sounds": [
+      "pelicano2:gui/open_selection"
+    ]
   }
 }

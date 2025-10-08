@@ -106,7 +106,7 @@ public class NicteMissionsEntity extends PathAwareEntity implements GeoEntity {
             }
             return PlayState.CONTINUE;
         } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging) {
-            state.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("walk"));
             return PlayState.CONTINUE;
         } else if (!this.handSwinging) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));

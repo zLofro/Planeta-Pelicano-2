@@ -8,11 +8,15 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class SelectionScreen extends Screen {
+
+    private ClientPlayerEntity player;
 
     private final Identifier SELECTION_OVERLAY = new Identifier(ModConstants.MOD_ID, "textures/gui/selection/selection_overlay.png");
 
@@ -25,8 +29,12 @@ public class SelectionScreen extends Screen {
     private static final int SELECTION_OVERLAY_WIDTH = 292;
     private static final int SELECTION_OVERLAY_HEIGHT = 294;
 
-    public SelectionScreen() {
+    public SelectionScreen(ClientPlayerEntity player) {
         super(Text.of("Selection Screen"));
+
+        this.player = player;
+
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "open_selection")), 1.0F, 1.0F);
     }
 
     @Override
@@ -95,6 +103,13 @@ public class SelectionScreen extends Screen {
             context.drawTexture(texture, this.getX(), this.getY(), 0, 0, width, height, width, height);
             RenderSystem.disableBlend();
         }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "close_selection")), 1.0F, 1.0F);
     }
 
     public enum Buttons {

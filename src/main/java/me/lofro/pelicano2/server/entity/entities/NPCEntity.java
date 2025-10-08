@@ -129,7 +129,7 @@ public class NPCEntity extends PathAwareEntity implements GeoEntity {
             }
             return PlayState.CONTINUE;
         } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging) {
-            state.getController().setAnimation(RawAnimation.begin().thenLoop("run"));
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("walk"));
             return PlayState.CONTINUE;
         } else if (!this.handSwinging) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
