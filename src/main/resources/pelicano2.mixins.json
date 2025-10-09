@@ -1,10 +1,12 @@
 {
-	"required": true,
-	"package": "me.lofro.pelicano2.global.mixins",
-	"compatibilityLevel": "JAVA_19",
-	"mixins": [
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "me.lofro.pelicano2.global.mixins",
+  "compatibilityLevel": "JAVA_19",
+  "mixins": [
+    "LivingEntityMixin",
+    "PlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }

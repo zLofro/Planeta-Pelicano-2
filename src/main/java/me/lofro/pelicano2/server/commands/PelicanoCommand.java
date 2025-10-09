@@ -3,15 +3,18 @@ package me.lofro.pelicano2.server.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.audio.Audios;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import me.lofro.pelicano2.server.commands.arguments.MissionArgumentType;
+import me.lofro.pelicano2.server.commands.arguments.SkillsArgumentType;
 import me.lofro.pelicano2.server.global.utils.identity.IdentityUtils;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
+import me.lofro.pelicano2.server.skills.data.Skills;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.CommandRegistryAccess;
@@ -31,6 +34,9 @@ import net.minecraft.world.World;
 import java.util.Collection;
 
 public class PelicanoCommand {
+
+    // TODO HACER COMANDO DE GET SKILL LEVEL, FORZAR INICIO DE MISIÓN, ETC.
+
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder = CommandManager.literal("pelicano").requires((source) -> source.hasPermissionLevel(4));
 
@@ -92,6 +98,14 @@ public class PelicanoCommand {
                                     return Command.SINGLE_SUCCESS;
                                 })));
 
+        literalArgumentBuilder.then(CommandManager.literal("skill")
+                .then(CommandManager.literal("set")
+                        .then(CommandManager.argument("players", EntityArgumentType.players())
+                                .then(CommandManager.argument("skill", SkillsArgumentType.skill())
+                                        .then(CommandManager.argument("level", IntegerArgumentType.integer())
+                                                .executes(commandContext -> executeSetSkillLevel(EntityArgumentType.getPlayers(commandContext, "players"),
+                                                        SkillsArgumentType.getSkill(commandContext, "skill"), IntegerArgumentType.getInteger(commandContext, "level"))))))));
+
         dispatcher.register(literalArgumentBuilder);
     }
 
@@ -110,6 +124,12 @@ public class PelicanoCommand {
         Main.getInstance().serverManager().getMissionManager().spawnNPC(mission, world, location);
 
         return 1;
+    }
+
+    public static int executeSetSkillLevel(Collection<ServerPlayerEntity> players, Skills skill, int level) {
+        players.forEach(player -> Main.getInstance().serverManager().getSkillTreeManager().updateSkillLevel(player.getUuid(), skill, level));
+
+        return Command.SINGLE_SUCCESS;
     }
 
 }

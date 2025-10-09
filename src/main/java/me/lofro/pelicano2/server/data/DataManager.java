@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 public class DataManager extends Instantiable<ModServer> {
 
     private final JsonConfig missionData;
+    private final JsonConfig skillData;
     
     public DataManager(ModServer instance) throws Exception {
         super(instance);
@@ -19,10 +20,12 @@ public class DataManager extends Instantiable<ModServer> {
         final String folderName = "pelicanoData";
 
         this.missionData = (minecraftServer.isDedicated()) ? JsonConfig.serverConfig("missionData.json", folderName, minecraftServer) : JsonConfig.savesConfig("missionData.json", folderName, minecraftServer);
+        this.skillData = (minecraftServer.isDedicated()) ? JsonConfig.serverConfig("skillData.json", folderName, minecraftServer) : JsonConfig.savesConfig("skillData.json", folderName, minecraftServer);
     }
 
     public void save() {
         instance().getMissionManager().save(missionData);
+        instance().getSkillTreeManager().save(skillData);
     }
 
 }

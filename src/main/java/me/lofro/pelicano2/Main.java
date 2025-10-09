@@ -3,10 +3,12 @@ package me.lofro.pelicano2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import me.lofro.pelicano2.global.items.ModItems;
 import me.lofro.pelicano2.server.audio.soundevents.PelicanoSoundEvents;
 import me.lofro.pelicano2.server.commands.CommandRegistries;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import me.lofro.pelicano2.server.commands.arguments.MissionArgumentType;
+import me.lofro.pelicano2.server.commands.arguments.SkillsArgumentType;
 import me.lofro.pelicano2.server.entity.EntityRegistries;
 import me.lofro.pelicano2.server.networking.ServerReceivers;
 import net.fabricmc.api.ModInitializer;
@@ -58,11 +60,19 @@ public class Main implements ModInitializer {
                 ConstantArgumentSerializer.of(MissionArgumentType::mission)
         );
 
+        ArgumentTypeRegistry.registerArgumentType(
+                new Identifier(ModConstants.MOD_ID, "skills"),
+                SkillsArgumentType.class,
+                ConstantArgumentSerializer.of(SkillsArgumentType::skill)
+        );
+
         EntityRegistries.register();
 
         CommandRegistries.registerCommands();
 
         ServerReceivers.registerServerReceivers();
+
+        ModItems.registerModItems();
     }
 
     /**
