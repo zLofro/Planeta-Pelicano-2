@@ -5,10 +5,12 @@ import me.lofro.pelicano2.client.ModClient;
 import me.lofro.pelicano2.client.screens.missions.MissionAcceptScreen;
 import me.lofro.pelicano2.client.screens.missions.MissionViewScreen;
 import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
+import me.lofro.pelicano2.client.screens.skills.SkillsScreen;
 import me.lofro.pelicano2.client.screens.updates.UpdatesInfo;
 import me.lofro.pelicano2.client.screens.updates.UpdatesLogScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.missions.missions.Missions;
+import me.lofro.pelicano2.server.skills.data.Skills;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
@@ -63,10 +65,21 @@ public class ClientReceivers {
             ModClient.getClientMissionData().setAssignedMissions(assignedMissions);
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.ADD_TO_CLIENT_MISSION_DATA, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.ADD_TO_CLIENT_MISSION_DATA_S2C, (client, handler, buf, responseSender) -> {
             Missions mission = buf.readEnumConstant(Missions.class);
 
             ModClient.getClientMissionData().getAssignedMissions().add(mission);
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_SKILLS_SCREEN_S2C, (client, handler, buf, responseSender) -> {
+            Map<Skills, Integer> skills = buf.readMap(HashMap::new, b -> b.readEnumConstant(Skills.class), PacketByteBuf::readInt);
+            int upgradePoints = buf.readInt();
+
+            client.execute(() -> {
+                if (client.player != null) {
+                   client.setScreen(new SkillsScreen(skills, upgradePoints));
+               }
+            });
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

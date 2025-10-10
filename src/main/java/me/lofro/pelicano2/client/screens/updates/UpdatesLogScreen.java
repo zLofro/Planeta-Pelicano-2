@@ -25,9 +25,6 @@ public class UpdatesLogScreen extends Screen {
     private final List<UpdatesInfo> updatesInfo;
     private int scrollOffset = 0;
 
-    // Layout
-    private final int guiWidth = 284;
-    private final int guiHeight = 284;
     private final int rowHeight = 40;
     private final int scrollHeight = 194;
 
@@ -43,7 +40,10 @@ public class UpdatesLogScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         renderBackground(context);
+        // Layout
+        int guiWidth = 284;
         int x = (this.width - guiWidth) / 2;
+        int guiHeight = 284;
         int y = (this.height - guiHeight) / 2;
 
         // --- Background ---

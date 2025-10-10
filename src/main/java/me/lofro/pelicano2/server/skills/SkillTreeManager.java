@@ -7,18 +7,25 @@ import me.lofro.pelicano2.global.data.util.JsonConfig;
 import me.lofro.pelicano2.server.ModServer;
 import me.lofro.pelicano2.server.skills.data.SkillData;
 import me.lofro.pelicano2.server.skills.data.Skills;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class SkillTreeManager implements Restorable {
+
+    private final ModServer modServer;
 
     private @Getter SkillData skillData;
 
     private final int MAX_LEVEL = 16;
 
     public SkillTreeManager(ModServer modServer) {
-        restore(modServer.getDataManager().getMissionData());
+        this.modServer = modServer;
+
+        restore(modServer.getDataManager().getSkillData());
     }
 
     @Override
@@ -40,12 +47,60 @@ public class SkillTreeManager implements Restorable {
         }
     }
 
+    public Map<Skills, Integer> getSkills(UUID player) {
+        Map<Skills, Integer> skills;
+        if (skillData.getPlayerSkills().containsKey(player)) {
+            skills = skillData.getPlayerSkills().get(player);
+
+            boolean changed = false;
+
+            for (Skills skill : Skills.values()) {
+                if (!skills.containsKey(skill)) {
+                    skills.put(skill, 0);
+                    changed = true;
+                }
+            }
+
+            if (changed) skillData.getPlayerSkills().put(player, skills);
+
+        } else {
+            skills = new HashMap<>();
+
+            for (Skills skill : Skills.values()) {
+                if (!skills.containsKey(skill)) {
+                    skills.put(skill, 0);
+                }
+            }
+
+            skillData.getPlayerSkills().put(player, skills);
+
+        }
+        return skills;
+    }
+
+    public void addSkillLevel(UUID uuid, Skills skills, int level) {
+        updateSkillLevel(uuid, skills, getSkillLevel(uuid, skills) + level);
+    }
+
     public void updateSkillLevel(UUID player, Skills skill, int level) {
         if (!skillData.getPlayerSkills().containsKey(player)) {
             skillData.getPlayerSkills().put(player, new HashMap<>());
         }
 
-        skillData.getPlayerSkills().get(player).put(skill, Math.min(level, MAX_LEVEL));
+        int newLevel = Math.min(level, MAX_LEVEL);
+
+        skillData.getPlayerSkills().get(player).put(skill, newLevel);
+        onUpdateSkillLevel(modServer.minecraftServer().getPlayerManager().getPlayer(player), skill, newLevel);
+    }
+
+    public void onUpdateSkillLevel(ServerPlayerEntity player, Skills skill, int level) {
+        if (skill == Skills.SPEED) {
+            if (player != null) {
+                double baseSpeed = 0.1D;
+                double multiplier = 1.0D + (level / 10.0D);
+                player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(baseSpeed * multiplier);
+            }
+        }
     }
 
     public int getSkillLevel(UUID player, Skills skill) {
@@ -70,6 +125,10 @@ public class SkillTreeManager implements Restorable {
 
     public void addUpgradePoints(UUID player, int points) {
         setUpgradePoints(player, getUpgradePoints(player) + points);
+    }
+
+    public void removeUpgradePoints(UUID player, int points) {
+        setUpgradePoints(player, getUpgradePoints(player) - points);
     }
 
     public void setUpgradePoints(UUID player, int points) {

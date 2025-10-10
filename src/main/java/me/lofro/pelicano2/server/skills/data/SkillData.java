@@ -19,7 +19,8 @@ public class SkillData {
     }
 
     public SkillData() {
-        this(new HashMap<>(), new HashMap<>());
+        this.playerSkills = new HashMap<>();
+        this.upgradePoints = new HashMap<>();
     }
 
 }
