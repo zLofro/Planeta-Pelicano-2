@@ -3,7 +3,7 @@ package me.lofro.pelicano2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
-import me.lofro.pelicano2.global.items.ModItems;
+import me.lofro.pelicano2.global.item.ModItems;
 import me.lofro.pelicano2.server.audio.soundevents.PelicanoSoundEvents;
 import me.lofro.pelicano2.server.commands.CommandRegistries;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;

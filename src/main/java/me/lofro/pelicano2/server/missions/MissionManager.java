@@ -72,6 +72,8 @@ public class MissionManager implements Restorable {
 
             removeActive(mission, playerUUID);
         }
+
+        // TODO EFECTOS VISUALES DE COMPLETAR
     }
 
     public void removeActive(Missions mission, UUID playerUUID) {

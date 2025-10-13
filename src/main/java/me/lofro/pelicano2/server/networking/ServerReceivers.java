@@ -44,7 +44,7 @@ public class ServerReceivers {
             SkillTreeManager skillTreeManager = Main.getInstance().serverManager().getSkillTreeManager();
 
             skillTreeManager.addSkillLevel(serverPlayerEntity.getUuid(), skill, 1);
-            //skillTreeManager.removeUpgradePoints(serverPlayerEntity.getUuid(), 1);
+            skillTreeManager.removeUpgradePoints(serverPlayerEntity.getUuid(), 1);
         });
 
         ServerPlayNetworking.registerGlobalReceiver(PacketIDS.CLICK_SELECTION_ICON_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {

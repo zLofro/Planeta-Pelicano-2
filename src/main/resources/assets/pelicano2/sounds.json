@@ -68,5 +68,25 @@
     "sounds": [
       "pelicano2:gui/open_selection"
     ]
+  },
+  "close_selection" : {
+    "sounds": [
+      "pelicano2:gui/close_selection"
+    ]
+  },
+  "open_skills" : {
+    "sounds": [
+      "pelicano2:gui/open_skills"
+    ]
+  },
+  "close_skills" : {
+    "sounds": [
+      "pelicano2:gui/close_skills"
+    ]
+  },
+  "level_up" : {
+    "sounds": [
+      "pelicano2:gui/level_up"
+    ]
   }
 }

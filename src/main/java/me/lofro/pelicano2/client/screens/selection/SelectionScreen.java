@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 
 public class SelectionScreen extends Screen {
 
-    private ClientPlayerEntity player;
+    private final ClientPlayerEntity player;
 
     private final Identifier SELECTION_OVERLAY = new Identifier(ModConstants.MOD_ID, "textures/gui/selection/selection_overlay.png");
 
@@ -107,9 +107,8 @@ public class SelectionScreen extends Screen {
 
     @Override
     public void close() {
-        super.close();
-
         player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "close_selection")), 1.0F, 1.0F);
+        super.close();
     }
 
     public enum Buttons {

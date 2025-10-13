@@ -1,6 +1,7 @@
 package me.lofro.pelicano2.client.screens.skills;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.global.utils.ModConstants;
 import me.lofro.pelicano2.server.skills.data.Skills;
@@ -9,13 +10,17 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
 
 public class SkillsScreen extends Screen {
+
+    private final ClientPlayerEntity player;
 
     private final Identifier BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/skills/background.png");
     private final Identifier EMPTY_BAR = new Identifier(ModConstants.MOD_ID,"textures/gui/skills/empty_bar.png");
@@ -26,11 +31,15 @@ public class SkillsScreen extends Screen {
     private final Map<Skills, Integer> skills;
     private final int upgradePoints;
 
-    public SkillsScreen(Map<Skills, Integer> skills, int upgradePoints) {
+    public SkillsScreen(Map<Skills, Integer> skills, int upgradePoints, ClientPlayerEntity player) {
         super(Text.of("Skills"));
 
         this.skills = skills;
         this.upgradePoints = upgradePoints;
+
+        this.player = player;
+
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "open_skills")), 1.0F, 1.0F);
     }
 
     @Override
@@ -118,6 +127,19 @@ public class SkillsScreen extends Screen {
             this.addDrawableChild(new CrossButton(crossSize, crossSize, crossX, speedBarY - 3, () -> onCrossClick(Skills.SPEED)));
         }
 
+        String label = "Puntos de mejora: ";
+        String value = String.valueOf(upgradePoints);
+
+        int labelWidth = this.textRenderer.getWidth(label);
+        int valueWidth = this.textRenderer.getWidth(value);
+        int totalWidth = labelWidth + valueWidth;
+
+        int startX = (this.width / 2) - (totalWidth / 2);
+
+        context.drawTextWithShadow(this.textRenderer, label, startX, speedBarY + 40, 0xCCCCCC);
+
+        context.drawTextWithShadow(this.textRenderer, value, startX + labelWidth, speedBarY + 40, 0x00C8FF);
+
         super.render(context, mouseX, mouseY, delta);
     }
 
@@ -132,7 +154,21 @@ public class SkillsScreen extends Screen {
 
         ClientPlayNetworking.send(PacketIDS.CLICK_UPDATE_SKILL_C2S, packetByteBuf);
 
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "level_up")), 1.0F, 1.0F);
+
         this.close();
+
+        PacketByteBuf newBuf = PacketByteBufs.create();
+
+        newBuf.writeEnumConstant(SelectionScreen.Buttons.SKILLS);
+
+        ClientPlayNetworking.send(PacketIDS.CLICK_SELECTION_ICON_C2S, newBuf);
+    }
+
+    @Override
+    public void close() {
+        player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "close_skills")), 1.0F, 1.0F);
+        super.close();
     }
 
     private static class CrossButton extends ButtonWidget {

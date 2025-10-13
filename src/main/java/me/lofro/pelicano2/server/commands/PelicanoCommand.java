@@ -5,8 +5,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import me.lofro.pelicano2.Main;
-import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.audio.Audios;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import me.lofro.pelicano2.server.commands.arguments.MissionArgumentType;
@@ -15,19 +15,17 @@ import me.lofro.pelicano2.server.global.utils.identity.IdentityUtils;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import me.lofro.pelicano2.server.skills.data.Skills;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.EntityType;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -65,19 +63,6 @@ public class PelicanoCommand {
                                         }))));
 
         literalArgumentBuilder
-                .then(CommandManager.literal("bitacora")
-                        .executes(commandContext -> {
-                            ServerPlayerEntity player = commandContext.getSource().getPlayer();
-
-                            if (player != null) {
-                                PacketByteBuf buf = PacketByteBufs.create();
-                                ServerPlayNetworking.send(player, PacketIDS.OPEN_BITACORA_SCREEN_S2C, buf);
-                            }
-
-                            return Command.SINGLE_SUCCESS;
-                        }));
-
-        literalArgumentBuilder
                 .then(CommandManager.literal("mission")
                         .then(CommandManager.literal("spawnNPC")
                                 .then(CommandManager.argument("mission", MissionArgumentType.mission())
@@ -85,26 +70,44 @@ public class PelicanoCommand {
                                                 .executes(commandContext -> spawnNPC(MissionArgumentType.getMission(commandContext, "mission"),
                                                         commandContext.getSource().getWorld(),
                                                         Vec3ArgumentType.getVec3(commandContext, "location"))))))
-                        .then(CommandManager.literal("missions")
-                                .executes(commandContext -> {
-                                    ServerPlayerEntity player = commandContext.getSource().getPlayer();
-
-                                    if (player != null) {
-                                        MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
-
-                                        missionManager.openViewScreen(player);
-                                    }
-
-                                    return Command.SINGLE_SUCCESS;
-                                })));
+                        .then(CommandManager.literal("forceAssign")
+                                .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .then(CommandManager.argument("players", EntityArgumentType.players())
+                                                .executes(commandContext -> executeForceAssign(commandContext,
+                                                        MissionArgumentType.getMission(commandContext, "mission"),
+                                                        EntityArgumentType.getPlayers(commandContext, "players"))))))
+                        .then(CommandManager.literal("complete")
+                                .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .then(CommandManager.argument("players", EntityArgumentType.players())
+                                                .executes(commandContext -> executeCompleteMission(commandContext,
+                                                        MissionArgumentType.getMission(commandContext, "mission"),
+                                                        EntityArgumentType.getPlayers(commandContext, "players"))))))
+                        .then(CommandManager.literal("unComplete")
+                                .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .then(CommandManager.argument("players", EntityArgumentType.players())
+                                                .executes(commandContext -> executeUnCompleteMission(commandContext,
+                                                        MissionArgumentType.getMission(commandContext, "mission"),
+                                                        EntityArgumentType.getPlayers(commandContext, "players"))))))
+                        .then(CommandManager.literal("unAssign")
+                                .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .then(CommandManager.argument("players", EntityArgumentType.players())
+                                                .executes(commandContext -> executeUnAssignMission(commandContext,
+                                                        MissionArgumentType.getMission(commandContext, "mission"),
+                                                        EntityArgumentType.getPlayers(commandContext, "players")))))));
 
         literalArgumentBuilder.then(CommandManager.literal("skill")
                 .then(CommandManager.literal("set")
                         .then(CommandManager.argument("players", EntityArgumentType.players())
                                 .then(CommandManager.argument("skill", SkillsArgumentType.skill())
                                         .then(CommandManager.argument("level", IntegerArgumentType.integer())
-                                                .executes(commandContext -> executeSetSkillLevel(EntityArgumentType.getPlayers(commandContext, "players"),
-                                                        SkillsArgumentType.getSkill(commandContext, "skill"), IntegerArgumentType.getInteger(commandContext, "level"))))))));
+                                                .executes(commandContext -> executeSetSkillLevel(commandContext,
+                                                        EntityArgumentType.getPlayers(commandContext, "players"),
+                                                        SkillsArgumentType.getSkill(commandContext, "skill"), IntegerArgumentType.getInteger(commandContext, "level")))))))
+                .then(CommandManager.literal("get")
+                        .then(CommandManager.argument("player", EntityArgumentType.player())
+                                .then(CommandManager.argument("skill", SkillsArgumentType.skill())
+                                        .executes(commandContext -> executeGetSkillLevel(commandContext,
+                                                EntityArgumentType.getPlayer(commandContext, "player"), SkillsArgumentType.getSkill(commandContext, "skill")))))));
 
         dispatcher.register(literalArgumentBuilder);
     }
@@ -126,8 +129,61 @@ public class PelicanoCommand {
         return 1;
     }
 
-    public static int executeSetSkillLevel(Collection<ServerPlayerEntity> players, Skills skill, int level) {
-        players.forEach(player -> Main.getInstance().serverManager().getSkillTreeManager().updateSkillLevel(player.getUuid(), skill, level));
+    public static int executeSetSkillLevel(CommandContext<ServerCommandSource> commandContext, Collection<ServerPlayerEntity> players, Skills skill, int level) {
+        players.forEach(player -> {
+            Main.getInstance().serverManager().getSkillTreeManager().updateSkillLevel(player.getUuid(), skill, level);
+            commandContext.getSource().sendMessage(Text.of("El nivel de " + skill.name() + " del jugador " + player.getName().getString() + " ha sido actualizado a " + level));
+        });
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int executeGetSkillLevel(CommandContext<ServerCommandSource> commandContext, ServerPlayerEntity player, Skills skill) {
+        int level = Main.getInstance().serverManager().getSkillTreeManager().getSkillLevel(player.getUuid(), skill);
+
+        commandContext.getSource().sendMessage(Text.of("El nivel de " + skill.name() + " del jugador " + player.getName().getString() + " es " + level));
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int executeForceAssign(CommandContext<ServerCommandSource> commandContext, Missions mission, Collection<ServerPlayerEntity> players) {
+        MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
+        players.forEach(player -> {
+            commandContext.getSource().sendMessage(Text.of("Has asignado la mision " + mission.getTitle().getString() + " al jugador " + player.getName().getString()));
+            missionManager.assign(mission, player.getUuid());
+        });
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int executeCompleteMission(CommandContext<ServerCommandSource> commandContext, Missions mission, Collection<ServerPlayerEntity> players) {
+        MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
+        players.forEach(player -> {
+            commandContext.getSource().sendMessage(Text.of("Has completado la mision " + mission.getTitle().getString() + " al jugador " + player.getName().getString()));
+            missionManager.complete(mission, player.getUuid());
+        });
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int executeUnCompleteMission(CommandContext<ServerCommandSource> commandContext, Missions mission, Collection<ServerPlayerEntity> players) {
+        MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
+
+        players.forEach(player -> {
+            missionManager.removeCompleted(mission, player.getUuid());
+            commandContext.getSource().sendMessage(Text.of("Has eliminado de completadas la mision " + mission.getTitle().getString() + " al jugador " + player.getName().getString()));
+        });
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int executeUnAssignMission(CommandContext<ServerCommandSource> commandContext, Missions mission, Collection<ServerPlayerEntity> players) {
+        MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
+
+        players.forEach(player -> {
+            missionManager.removeActive(mission, player.getUuid());
+            commandContext.getSource().sendMessage(Text.of("Has des asignado la mision " + mission.getTitle().getString() + " al jugador " + player.getName().getString()));
+        });
 
         return Command.SINGLE_SUCCESS;
     }

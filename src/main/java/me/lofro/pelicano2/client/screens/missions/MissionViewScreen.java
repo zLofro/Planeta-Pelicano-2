@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class MissionViewScreen extends Screen {
 
-    private ClientPlayerEntity player;
+    private final ClientPlayerEntity player;
 
     // --- Textures ---
     private static final Identifier BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/missions/mission_view_background.png");
@@ -144,7 +144,7 @@ public class MissionViewScreen extends Screen {
 
     @Override
     public void close() {
-        super.close();
         player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "close_mission_screen")), 1.0F, 1.0F);
+        super.close();
     }
 }

@@ -77,7 +77,7 @@ public class ClientReceivers {
 
             client.execute(() -> {
                 if (client.player != null) {
-                   client.setScreen(new SkillsScreen(skills, upgradePoints));
+                   client.setScreen(new SkillsScreen(skills, upgradePoints, client.player));
                }
             });
         });
