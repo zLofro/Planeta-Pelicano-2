@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.lofro.pelicano2.Main;
+import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.audio.Audios;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import me.lofro.pelicano2.server.commands.arguments.MissionArgumentType;
@@ -15,6 +16,8 @@ import me.lofro.pelicano2.server.global.utils.identity.IdentityUtils;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import me.lofro.pelicano2.server.skills.data.Skills;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
@@ -32,8 +35,6 @@ import net.minecraft.world.World;
 import java.util.Collection;
 
 public class PelicanoCommand {
-
-    // TODO HACER COMANDO DE GET SKILL LEVEL, FORZAR INICIO DE MISIÓN, ETC.
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder = CommandManager.literal("pelicano").requires((source) -> source.hasPermissionLevel(4));
@@ -108,6 +109,17 @@ public class PelicanoCommand {
                                 .then(CommandManager.argument("skill", SkillsArgumentType.skill())
                                         .executes(commandContext -> executeGetSkillLevel(commandContext,
                                                 EntityArgumentType.getPlayer(commandContext, "player"), SkillsArgumentType.getSkill(commandContext, "skill")))))));
+
+        literalArgumentBuilder.then(CommandManager.literal("workbench")
+                .executes(commandContext -> {
+                    ServerPlayerEntity player = commandContext.getSource().getPlayer();
+
+                    if (player != null) {
+                        Main.getInstance().serverManager().getWorkBenchManager().openGui(player);
+                    }
+
+                    return Command.SINGLE_SUCCESS;
+                }));
 
         dispatcher.register(literalArgumentBuilder);
     }

@@ -8,6 +8,7 @@ import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
 import me.lofro.pelicano2.client.screens.skills.SkillsScreen;
 import me.lofro.pelicano2.client.screens.updates.UpdatesInfo;
 import me.lofro.pelicano2.client.screens.updates.UpdatesLogScreen;
+import me.lofro.pelicano2.client.screens.workbench.WorkBenchScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import me.lofro.pelicano2.server.skills.data.Skills;
@@ -79,6 +80,17 @@ public class ClientReceivers {
                 if (client.player != null) {
                    client.setScreen(new SkillsScreen(skills, upgradePoints, client.player));
                }
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_WORKBENCH_SCREEN_S2C, (client, handler, buf, responseSender) -> {
+            int secondsRemaining = buf.readInt();
+            boolean activeCraft = buf.readBoolean();
+
+            client.execute(() -> {
+                if (client.player != null) {
+                    client.setScreen(new WorkBenchScreen(secondsRemaining, activeCraft));
+                }
             });
         });
 

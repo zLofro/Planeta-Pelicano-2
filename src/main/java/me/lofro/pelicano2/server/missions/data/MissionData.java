@@ -1,4 +1,4 @@
-package me.lofro.pelicano2.server.data.types;
+package me.lofro.pelicano2.server.missions.data;
 
 import lombok.Getter;
 import me.lofro.pelicano2.server.missions.missions.Missions;

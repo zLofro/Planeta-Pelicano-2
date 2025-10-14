@@ -6,7 +6,7 @@ import me.lofro.pelicano2.global.data.api.Restorable;
 import me.lofro.pelicano2.global.data.util.JsonConfig;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.ModServer;
-import me.lofro.pelicano2.server.data.types.MissionData;
+import me.lofro.pelicano2.server.missions.data.MissionData;
 import me.lofro.pelicano2.server.entity.ModEntities;
 import me.lofro.pelicano2.server.entity.entities.GuideMissionsEntity;
 import me.lofro.pelicano2.server.entity.entities.NPCEntity;

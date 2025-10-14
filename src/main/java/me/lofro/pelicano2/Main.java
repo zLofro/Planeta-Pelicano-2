@@ -1,7 +1,6 @@
 package me.lofro.pelicano2;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import lombok.Getter;
 import me.lofro.pelicano2.global.item.ModItems;
 import me.lofro.pelicano2.server.audio.soundevents.PelicanoSoundEvents;
@@ -14,7 +13,10 @@ import me.lofro.pelicano2.server.networking.ServerReceivers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
+import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import me.lofro.pelicano2.client.ModClient;
@@ -22,6 +24,7 @@ import me.lofro.pelicano2.global.data.adapters.LocalDateSerializer;
 import me.lofro.pelicano2.global.utils.ModConstants;
 import me.lofro.pelicano2.server.ModServer;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 
 public class Main implements ModInitializer {
@@ -35,6 +38,18 @@ public class Main implements ModInitializer {
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+            .registerTypeAdapter(Pair.class, (JsonSerializer<Pair<Item, Integer>>) (src, typeOfSrc, context) -> {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("item", src.getLeft().toString());
+                obj.addProperty("amount", src.getRight());
+                return obj;
+            })
+            .registerTypeAdapter(Pair.class, (JsonDeserializer<Pair<Item, Integer>>) (json, typeOfT, context) -> {
+                JsonObject obj = json.getAsJsonObject();
+                Item item = Registries.ITEM.get(new Identifier(obj.get("item").getAsString()));
+                int amount = obj.get("amount").getAsInt();
+                return new Pair<>(item, amount);
+            })
             .setPrettyPrinting()
             .serializeNulls()
             .create();

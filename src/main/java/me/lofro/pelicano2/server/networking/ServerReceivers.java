@@ -7,6 +7,7 @@ import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import me.lofro.pelicano2.server.skills.SkillTreeManager;
 import me.lofro.pelicano2.server.skills.data.Skills;
+import me.lofro.pelicano2.server.workbench.WorkBenchManager;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -110,6 +111,27 @@ public class ServerReceivers {
                             skillTreeManager.getSkillLevel(player.getUuid(), Skills.SPEED)
                     );
                 });
+            }
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(PacketIDS.WORKBENCH_BUTTON_CLICK_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
+            boolean noTime = packetByteBuf.readBoolean();
+
+            WorkBenchManager workBenchManager = Main.getInstance().serverManager().getWorkBenchManager();
+
+            if (noTime) {
+                if (workBenchManager.isReady(serverPlayerEntity.getUuid())) {
+                    workBenchManager.claimResult(serverPlayerEntity);
+                    serverPlayerEntity.sendMessage(Text.of("Has obtenido el objeto."));
+                } else {
+                    if (workBenchManager.startCraft(serverPlayerEntity)) {
+                        serverPlayerEntity.sendMessage(Text.of("Has empezado a craftear un " + workBenchManager.getActiveCrafts().get(serverPlayerEntity.getUuid()).getItem().getName().getString()));
+                    } else {
+                        serverPlayerEntity.sendMessage(Text.of("No tienes los items necesarios para craftear nada."));
+                    }
+                }
+            } else {
+                serverPlayerEntity.sendMessage(Text.of("¡Ya hay un crafteo en curso!"));
             }
         });
     }
