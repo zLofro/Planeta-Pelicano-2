@@ -88,5 +88,25 @@
     "sounds": [
       "pelicano2:gui/level_up"
     ]
+  },
+  "close_workbench" : {
+    "sounds": [
+      "pelicano2:gui/close_workbench"
+    ]
+  },
+  "open_workbench" : {
+    "sounds": [
+      "pelicano2:gui/open_workbench"
+    ]
+  },
+  "pick_item" : {
+    "sounds": [
+      "pelicano2:gui/pick_item"
+    ]
+  },
+  "crafted_item" : {
+    "sounds": [
+      "pelicano2:gui/crafted_item"
+    ]
   }
 }

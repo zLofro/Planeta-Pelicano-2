@@ -8,12 +8,14 @@ import me.lofro.pelicano2.server.missions.missions.Missions;
 import me.lofro.pelicano2.server.skills.SkillTreeManager;
 import me.lofro.pelicano2.server.skills.data.Skills;
 import me.lofro.pelicano2.server.workbench.WorkBenchManager;
+import me.lofro.pelicano2.server.workbench.WorkBenchRecipe;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +37,7 @@ public class ServerReceivers {
                 buf.writeEnumConstant(mission);
                 ServerPlayNetworking.send(serverPlayerEntity, PacketIDS.ADD_TO_CLIENT_MISSION_DATA_S2C, buf);
 
-                serverPlayerEntity.sendMessage(Text.of("Misión " + mission.getTitle().getString() + " aceptada."));
+                serverPlayerEntity.sendMessage(Text.literal("¡Has aceptado con éxito la mision " + mission.getTitle().getString() + "!").formatted(Formatting.GREEN));
             }
         });
 
@@ -46,6 +48,8 @@ public class ServerReceivers {
 
             skillTreeManager.addSkillLevel(serverPlayerEntity.getUuid(), skill, 1);
             skillTreeManager.removeUpgradePoints(serverPlayerEntity.getUuid(), 1);
+
+            serverPlayerEntity.sendMessage(Text.literal("¡Felicidades! Has mejorado tu habilidad de " + skill.name() + ".").formatted(Formatting.AQUA));
         });
 
         ServerPlayNetworking.registerGlobalReceiver(PacketIDS.CLICK_SELECTION_ICON_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
@@ -117,21 +121,24 @@ public class ServerReceivers {
         ServerPlayNetworking.registerGlobalReceiver(PacketIDS.WORKBENCH_BUTTON_CLICK_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
             boolean noTime = packetByteBuf.readBoolean();
 
+            WorkBenchRecipe recipe = packetByteBuf.readEnumConstant(WorkBenchRecipe.class);
+
             WorkBenchManager workBenchManager = Main.getInstance().serverManager().getWorkBenchManager();
 
             if (noTime) {
                 if (workBenchManager.isReady(serverPlayerEntity.getUuid())) {
+                    var item = workBenchManager.getWorkBenchData().getCrafts().get(serverPlayerEntity.getUuid()).getLeft();
+                    serverPlayerEntity.sendMessage(Text.literal("Has fabricado exitosamente un ").append(item.getName()).formatted(Formatting.LIGHT_PURPLE));
                     workBenchManager.claimResult(serverPlayerEntity);
-                    serverPlayerEntity.sendMessage(Text.of("Has obtenido el objeto."));
                 } else {
-                    if (workBenchManager.startCraft(serverPlayerEntity)) {
-                        serverPlayerEntity.sendMessage(Text.of("Has empezado a craftear un " + workBenchManager.getActiveCrafts().get(serverPlayerEntity.getUuid()).getItem().getName().getString()));
+                    if (workBenchManager.startCraft(serverPlayerEntity, recipe)) {
+                        serverPlayerEntity.sendMessage(Text.literal("Ha comenzado la fabricacion " + workBenchManager.getActiveCrafts().get(serverPlayerEntity.getUuid()).getItem().getName().getString()).formatted(Formatting.YELLOW));
                     } else {
-                        serverPlayerEntity.sendMessage(Text.of("No tienes los items necesarios para craftear nada."));
+                        serverPlayerEntity.sendMessage(Text.literal("No tienes los items necesarios para fabricar ese objeto.").formatted(Formatting.RED));
                     }
                 }
             } else {
-                serverPlayerEntity.sendMessage(Text.of("¡Ya hay un crafteo en curso!"));
+                serverPlayerEntity.sendMessage(Text.literal("¡Ya hay un crafteo en curso!").formatted(Formatting.RED));
             }
         });
     }

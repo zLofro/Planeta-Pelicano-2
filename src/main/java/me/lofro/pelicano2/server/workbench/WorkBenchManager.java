@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Pair;
@@ -53,6 +54,18 @@ public class WorkBenchManager implements Restorable {
         packetByteBuf.writeInt(timeLeft(player.getUuid()));
         packetByteBuf.writeBoolean(activeCraft(player.getUuid()) || isReady(player.getUuid()));
 
+        int currentResultID;
+
+        if (isReady(player.getUuid())) {
+            currentResultID = Registries.ITEM.getRawId(getWorkBenchData().getCrafts().get(player.getUuid()).getLeft());
+        } else if (activeCraft(player.getUuid())) {
+            currentResultID = Registries.ITEM.getRawId(activeCrafts.get(player.getUuid()).getItem());
+        } else {
+            currentResultID = -1;
+        }
+
+        packetByteBuf.writeInt(currentResultID);
+
         ServerPlayNetworking.send(player, PacketIDS.OPEN_WORKBENCH_SCREEN_S2C, packetByteBuf);
     }
 
@@ -64,11 +77,9 @@ public class WorkBenchManager implements Restorable {
         }
     }
 
-    public boolean startCraft(ServerPlayerEntity player) {
+    public boolean startCraft(ServerPlayerEntity player, WorkBenchRecipe workBenchRecipe) {
         if (!activeCraft(player.getUuid())) {
-            WorkBenchRecipe workBenchRecipe = getCraftableRecipe(player);
-
-            if (workBenchRecipe != null) {
+            if (workBenchRecipe != null && hasAllItems(player, workBenchRecipe.getRecipe())) {
                 consumeRecipeItems(player, workBenchRecipe);
 
                 activeCrafts.put(player.getUuid(), new ActiveCraft(workBenchRecipe.getResult(), 10, System.currentTimeMillis()));
@@ -120,23 +131,6 @@ public class WorkBenchManager implements Restorable {
             }
         }
         player.getInventory().markDirty(); // actualiza visualmente el inventario
-    }
-
-    /**
-     * Comprueba si el jugador tiene los ingredientes para alguna receta del enum WorkBenchRecipe.
-     * Recorre las recetas en orden y devuelve la primera que pueda craftear.
-     *
-     * @param player el jugador a comprobar
-     * @return la receta que puede craftear, o null si no tiene ninguna
-     */
-    public WorkBenchRecipe getCraftableRecipe(ServerPlayerEntity player) {
-        // Recorremos las recetas en orden
-        for (WorkBenchRecipe recipe : WorkBenchRecipe.values()) {
-            if (hasAllItems(player, recipe.getRecipe())) {
-                return recipe;
-            }
-        }
-        return null; // no tiene ninguna receta completa
     }
 
     /**
