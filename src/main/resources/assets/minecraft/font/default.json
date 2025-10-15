@@ -1,0 +1,81 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/potion.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE100"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/bagpipe.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE101"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/cooked_duck.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE102"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/flute.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE103"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/golden_apple.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE104"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/golden_carrot.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE105"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/great_experience_bottle.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE106"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/power_glove.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE107"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/royal_jelly_bottle.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE108"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/skeletal_totem_of_undying.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE109"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/waystone.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE110"]
+    }
+  ]
+}

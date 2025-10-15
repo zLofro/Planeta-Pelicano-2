@@ -98,7 +98,7 @@ public class MissionViewScreen extends Screen {
                     int drawX = (int) (textX / scale);
                     int drawY = (int) ((textY + j * (textRenderer.fontHeight + 2)) / scale);
 
-                    context.drawText(textRenderer, line, drawX, drawY, 0x444444, false);
+                    context.drawText(textRenderer, line, drawX, drawY, 0xFFFFFF, false);
                     context.getMatrices().pop();
                 }
             }

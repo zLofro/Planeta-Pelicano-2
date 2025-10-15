@@ -279,14 +279,14 @@ public class MissionAcceptScreen extends Screen {
 
         var textProportion = switch (guiScale) {
             case 1 -> 5.5F;
-            case 2 -> 3;
+            case 2 -> 2.75F;
             case 3 -> 1.75F;
             default -> 1.5F;
         };
 
         Pair<Integer, Integer> textSeparator = switch (guiScale) {
             case 1 -> new Pair<>(460, 400);
-            case 2 -> new Pair<>(270, 230);
+            case 2 -> new Pair<>(300, 260);
             case 3 -> new Pair<>(200, 170);
             case 4 -> new Pair<>(160, 140);
             default -> new Pair<>(200, 200);

@@ -108,5 +108,10 @@
     "sounds": [
       "pelicano2:gui/crafted_item"
     ]
+  },
+  "claim_point" : {
+    "sounds": [
+      "pelicano2:claim_point"
+    ]
   }
 }

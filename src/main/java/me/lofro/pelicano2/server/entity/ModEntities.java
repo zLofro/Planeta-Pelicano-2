@@ -96,7 +96,15 @@ public class ModEntities {
             Registries.ENTITY_TYPE,
             new Identifier(ModConstants.MOD_ID, "void_fountain"),
             FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, VoidFountainEntity::new)
-                    .dimensions(EntityDimensions.fixed(2f, 1.5f))
+                    .dimensions(EntityDimensions.fixed(2.1f, 1.5f))
+                    .build()
+    );
+
+    public static final EntityType<CauldronEntity> CAULDRON_ENTITY = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "cauldron"),
+            FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, CauldronEntity::new)
+                    .dimensions(EntityDimensions.fixed(1f, 1.5f))
                     .build()
     );
 

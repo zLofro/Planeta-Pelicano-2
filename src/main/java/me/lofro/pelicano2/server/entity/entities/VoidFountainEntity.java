@@ -1,6 +1,7 @@
 package me.lofro.pelicano2.server.entity.entities;
 
 import me.lofro.pelicano2.Main;
+import me.lofro.pelicano2.global.utils.ModConstants;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -12,10 +13,13 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -51,11 +55,6 @@ public class VoidFountainEntity extends PathAwareEntity implements GeoEntity {
 
     public void setConsuming(boolean value) {
         this.dataTracker.set(CONSUMING, value);
-    }
-
-    @Override
-    protected ActionResult interactMob(PlayerEntity player, Hand hand) {
-        return super.interactMob(player, hand);
     }
 
     @Override
@@ -121,6 +120,8 @@ public class VoidFountainEntity extends PathAwareEntity implements GeoEntity {
             setConsuming(true);
             this.consumeTicks = 0;
             player.sendMessage(Text.literal("Has canjeado con éxito un punto de habilidad.").formatted(Formatting.DARK_AQUA), false);
+
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "claim_point")), SoundCategory.MASTER, 1.0f, 1.0f);
 
             Main.getInstance().serverManager().getSkillTreeManager().addUpgradePoints(player.getUuid(), 1);
         }
