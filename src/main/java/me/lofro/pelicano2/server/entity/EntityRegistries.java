@@ -15,6 +15,8 @@ public class EntityRegistries {
         FabricDefaultAttributeRegistry.register(ModEntities.GUIDE_MISSIONS, GuideMissionsEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.GNOME_BOSS, GnomeBossEntity.createGnomeBossAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.NPC_ENTITY, NPCEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.GNOME_TABLE, GnomeTableEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.VOID_FOUNTAIN, VoidFountainEntity.createAttributes());
     }
 
 }

@@ -3,7 +3,8 @@
   "package": "me.lofro.pelicano2.global.mixins",
   "compatibilityLevel": "JAVA_19",
   "mixins": [
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -16,6 +16,8 @@ public class EntityRenderRegistries {
         EntityRendererRegistry.register(ModEntities.GUIDE_MISSIONS, GuideMissionsRenderer::new);
         EntityRendererRegistry.register(ModEntities.GNOME_BOSS, GnomeBossRenderer::new);
         EntityRendererRegistry.register(ModEntities.NPC_ENTITY, NPCEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.GNOME_TABLE, GnomeTableRenderer::new);
+        EntityRendererRegistry.register(ModEntities.VOID_FOUNTAIN, VoidFountainRenderer::new);
     }
 
 }

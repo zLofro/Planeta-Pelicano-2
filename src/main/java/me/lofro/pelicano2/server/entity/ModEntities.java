@@ -84,4 +84,20 @@ public class ModEntities {
                     .build()
     );
 
+    public static final EntityType<GnomeTableEntity> GNOME_TABLE = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "gnome_table"),
+            FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, GnomeTableEntity::new)
+                    .dimensions(EntityDimensions.fixed(2f, 1f))
+                    .build()
+    );
+
+    public static final EntityType<VoidFountainEntity> VOID_FOUNTAIN = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "void_fountain"),
+            FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, VoidFountainEntity::new)
+                    .dimensions(EntityDimensions.fixed(2f, 1.5f))
+                    .build()
+    );
+
 }
