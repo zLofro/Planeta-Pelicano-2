@@ -8,6 +8,7 @@ import me.lofro.pelicano2.server.commands.CommandRegistries;
 import me.lofro.pelicano2.server.commands.arguments.AudioArgumentType;
 import me.lofro.pelicano2.server.commands.arguments.MissionArgumentType;
 import me.lofro.pelicano2.server.commands.arguments.SkillsArgumentType;
+import me.lofro.pelicano2.server.commands.arguments.UpdatesArgumentType;
 import me.lofro.pelicano2.server.entity.EntityRegistries;
 import me.lofro.pelicano2.server.networking.ServerReceivers;
 import net.fabricmc.api.ModInitializer;
@@ -79,6 +80,12 @@ public class Main implements ModInitializer {
                 new Identifier(ModConstants.MOD_ID, "skills"),
                 SkillsArgumentType.class,
                 ConstantArgumentSerializer.of(SkillsArgumentType::skill)
+        );
+
+        ArgumentTypeRegistry.registerArgumentType(
+                new Identifier(ModConstants.MOD_ID, "updates"),
+                UpdatesArgumentType.class,
+                ConstantArgumentSerializer.of(UpdatesArgumentType::updates)
         );
 
         EntityRegistries.register();

@@ -1,6 +1,7 @@
 package me.lofro.pelicano2.client.screens.updates;
 
 import me.lofro.pelicano2.global.utils.ModConstants;
+import me.lofro.pelicano2.server.updates.Updates;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -13,22 +14,21 @@ import java.util.List;
 
 public class UpdatesLogScreen extends Screen {
 
-    private ClientPlayerEntity player;
+    private final ClientPlayerEntity player;
 
     // --- Textures ---
     private static final Identifier BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/background.png");
     private static final Identifier SLIDE = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/slide.png");
     private static final Identifier SLIDE_BACKGROUND = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/slide_background.png");
     private static final Identifier UPDATE_SEEN = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_seen.png");
-    private static final Identifier UPDATE_NOT_SEEN = new Identifier(ModConstants.MOD_ID, "textures/gui/bitacora/update_not_seen.png");
 
-    private final List<UpdatesInfo> updatesInfo;
+    private final List<Updates> updatesInfo;
     private int scrollOffset = 0;
 
     private final int rowHeight = 40;
     private final int scrollHeight = 194;
 
-    public UpdatesLogScreen(List<UpdatesInfo> updatesInfo, ClientPlayerEntity player) {
+    public UpdatesLogScreen(List<Updates> updatesInfo, ClientPlayerEntity player) {
         super(Text.literal("Bitácora de Kaleb"));
         this.updatesInfo = updatesInfo;
 
@@ -68,20 +68,19 @@ public class UpdatesLogScreen extends Screen {
         int clipBottom = scrollY + scrollHeight - rowHeight / 2;
 
         for (int i = 0; i < visibleCount && (firstVisible + i) < updatesInfo.size(); i++) {
-            UpdatesInfo updatesInfo = this.updatesInfo.get(firstVisible + i);
-            Identifier texture = updatesInfo.seen ? UPDATE_SEEN : UPDATE_NOT_SEEN;
+            Updates updatesInfo = this.updatesInfo.get(firstVisible + i);
 
             int updateX = x + 20;
             int rowY = scrollY + yOffset + (i * rowHeight);
 
             if (rowY + updateHeight > clipTop && rowY < clipBottom) {
-                context.drawTexture(texture, updateX, rowY, 0, 0, updateWidth, updateHeight, updateWidth, updateHeight);
+                context.drawTexture(UPDATE_SEEN, updateX, rowY, 0, 0, updateWidth, updateHeight, updateWidth, updateHeight);
 
                 int textX = updateX + 20;
                 int textY = rowY + 10;
                 int maxTextWidth = updateWidth - 40;
 
-                List<OrderedText> lines = textRenderer.wrapLines(updatesInfo.title, maxTextWidth);
+                List<OrderedText> lines = textRenderer.wrapLines(updatesInfo.getSummary(), maxTextWidth);
 
                 for (int j = 0; j < Math.min(2, lines.size()); j++) {
                     OrderedText line = lines.get(j);

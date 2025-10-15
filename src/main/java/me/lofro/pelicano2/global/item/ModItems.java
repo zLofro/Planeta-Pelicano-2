@@ -8,8 +8,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class ModItems {
-    public static final Item UPGRADE_BALL = registerItem("upgrade_ball", new Item(new Item.Settings().maxCount(64)));
-    public static final Item HUMAN_UPGRADE_POTION = registerItem("human_upgrade_potion", new Item(new Item.Settings().maxCount(64)));
+    public static final Item UPGRADE_BALL = registerItem("upgrade_ball", new Item(new Item.Settings().maxCount(1)));
+    public static final Item HUMAN_UPGRADE_POTION = registerItem("human_upgrade_potion", new Item(new Item.Settings().maxCount(1)));
 
     // Helper method to register it
     private static Item registerItem(String name, Item item) {

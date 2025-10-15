@@ -6,13 +6,12 @@ import me.lofro.pelicano2.client.screens.missions.MissionAcceptScreen;
 import me.lofro.pelicano2.client.screens.missions.MissionViewScreen;
 import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
 import me.lofro.pelicano2.client.screens.skills.SkillsScreen;
-import me.lofro.pelicano2.client.screens.updates.UpdatesInfo;
 import me.lofro.pelicano2.client.screens.updates.UpdatesLogScreen;
 import me.lofro.pelicano2.client.screens.workbench.WorkBenchScreen;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import me.lofro.pelicano2.server.skills.data.Skills;
-import me.lofro.pelicano2.server.workbench.WorkBenchRecipe;
+import me.lofro.pelicano2.server.updates.Updates;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.item.Item;
@@ -24,19 +23,10 @@ public class ClientReceivers {
 
     public static void register() {
         ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_BITACORA_SCREEN_S2C, (client, handler, buf, responseSender) -> {
+            List<Updates> updates = buf.readCollection(ArrayList::new, b -> b.readEnumConstant(Updates.class));
             client.execute(() -> {
                 if (client.player != null) {
-                    client.setScreen(new UpdatesLogScreen(List.of(
-                            new UpdatesInfo("Recolecta 10 manzanas", false),
-                            new UpdatesInfo("Habla con el aldeano", true),
-                            new UpdatesInfo("Explora el bosque", false),
-                            new UpdatesInfo("Encuentra el tesoro", true),
-                            new UpdatesInfo("Testeo jaja", false),
-                            new UpdatesInfo("me estoy volviendo loco", false),
-                            new UpdatesInfo("Comete un pimiento", false),
-                            new UpdatesInfo("?????", true),
-                            new UpdatesInfo("ultima mision", true)
-                    ), client.player));
+                    client.setScreen(new UpdatesLogScreen(updates, client.player));
                 }
             });
         });

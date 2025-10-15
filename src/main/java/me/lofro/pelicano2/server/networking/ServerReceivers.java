@@ -7,6 +7,7 @@ import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import me.lofro.pelicano2.server.skills.SkillTreeManager;
 import me.lofro.pelicano2.server.skills.data.Skills;
+import me.lofro.pelicano2.server.updates.Updates;
 import me.lofro.pelicano2.server.workbench.WorkBenchManager;
 import me.lofro.pelicano2.server.workbench.WorkBenchRecipe;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -58,6 +59,10 @@ public class ServerReceivers {
             switch (button) {
                 case UPDATES -> {
                     PacketByteBuf buf = PacketByteBufs.create();
+
+                    List<Updates> updates = Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates();
+                    buf.writeCollection(updates, PacketByteBuf::writeEnumConstant);
+
                     ServerPlayNetworking.send(serverPlayerEntity, PacketIDS.OPEN_BITACORA_SCREEN_S2C, buf);
                 }
                 case MISSIONS -> {

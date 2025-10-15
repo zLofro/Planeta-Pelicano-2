@@ -5,6 +5,7 @@ import me.lofro.pelicano2.server.audio.AudioManager;
 import me.lofro.pelicano2.server.data.DataManager;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.skills.SkillTreeManager;
+import me.lofro.pelicano2.server.updates.UpdatesManager;
 import me.lofro.pelicano2.server.workbench.WorkBenchManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
@@ -24,6 +25,7 @@ public class ModServer {
     private @Getter MissionManager missionManager;
     private @Getter SkillTreeManager skillTreeManager;
     private @Getter WorkBenchManager workBenchManager;
+    private @Getter UpdatesManager updatesManager;
 
     private @Getter ScheduledExecutorService serverExecutorService;
 
@@ -48,6 +50,8 @@ public class ModServer {
             this.skillTreeManager = new SkillTreeManager(this);
 
             this.workBenchManager = new WorkBenchManager(this);
+
+            this.updatesManager = new UpdatesManager(this);
         }));
         ServerLifecycleEvents.SERVER_STOPPED.register((server -> {
             try {
