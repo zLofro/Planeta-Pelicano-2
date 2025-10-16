@@ -9,6 +9,7 @@ public class PacketIDS {
     public static final Identifier OPEN_MISSION_VIEW_SCREEN_S2C = new Identifier(ModConstants.MOD_ID, "open_mission_view");
     public static final Identifier OPEN_SKILLS_SCREEN_S2C = new Identifier(ModConstants.MOD_ID, "open_skills");
     public static final Identifier OPEN_WORKBENCH_SCREEN_S2C = new Identifier(ModConstants.MOD_ID, "open_workbench");
+    public static final Identifier OPEN_BOSSES_SCREEN_S2C = new Identifier(ModConstants.MOD_ID, "open_bosses");
 
     public static final Identifier CLICK_SELECTION_ICON_C2S = new Identifier(ModConstants.MOD_ID, "click_selection_icon");
 

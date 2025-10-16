@@ -17,6 +17,10 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorkBenchScreen extends Screen {
 
@@ -31,7 +35,9 @@ public class WorkBenchScreen extends Screen {
     private final int rowHeight = 46;
     private final int scrollHeight = 182;
 
-    private final int content = WorkBenchRecipe.values().length;
+    private final List<WorkBenchRecipe> validRecipes;
+
+    private final int content;
 
     private int secondsLeft;
 
@@ -52,11 +58,36 @@ public class WorkBenchScreen extends Screen {
         this.activeCraft = activeCraft;
         this.player = player;
 
-        this.currentRecipe = WorkBenchRecipe.values()[0];
-        if (currentResult != null) {
-            this.currentResult = currentResult;
+        this.currentRecipe = null;
+
+        this.validRecipes = new ArrayList<>();
+        for (WorkBenchRecipe value : WorkBenchRecipe.values()) {
+            boolean validIngredients = true;
+            for (Pair<Item, Integer> stackInfo : value.getRecipe()) {
+                if (stackInfo.getLeft() == null) {
+                    validIngredients = false;
+                    break;
+                }
+            }
+
+            if (value.getResult() != null && validIngredients) {
+                if (this.currentRecipe == null) {
+                    this.currentRecipe = value;
+                }
+                validRecipes.add(value);
+            }
+        }
+
+        this.content = validRecipes.size();
+
+        if (this.currentRecipe != null) {
+            if (currentResult != null) {
+                this.currentResult = currentResult;
+            } else {
+                this.currentResult = currentRecipe.getResult();
+            }
         } else {
-            this.currentResult = currentRecipe.getResult();
+            this.currentResult = null;
         }
 
         player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "open_workbench")), 1.0F, 1.0F);
@@ -125,11 +156,11 @@ public class WorkBenchScreen extends Screen {
             int rowY = (scrollY + 5) + yOffset + (i * rowHeight);
 
             if (rowY + panelHeight > clipTop && rowY < clipBottom) {
+                // Obtener receta correspondiente
+                WorkBenchRecipe recipe = validRecipes.get(firstVisible + i);
+
                 // Panel de fondo
                 context.drawTexture(INFORMATION_PANEL, panelX, rowY, 0, 0, panelWidth, panelHeight, panelWidth, panelHeight);
-
-                // Obtener receta correspondiente
-                WorkBenchRecipe recipe = WorkBenchRecipe.values()[firstVisible + i];
 
                 // Render ítems
                 int itemY = rowY + 11;
@@ -139,7 +170,9 @@ public class WorkBenchScreen extends Screen {
 
                 // Renderizar los ingredientes (4)
                 for (int j = 0; j < recipe.getRecipe().length; j++) {
-                    ItemStack ingredientStack = new ItemStack(recipe.getRecipe()[j]);
+                    Pair<Item, Integer> ingredientInfo = recipe.getRecipe()[j];
+
+                    ItemStack ingredientStack = new ItemStack(ingredientInfo.getLeft(), ingredientInfo.getRight());
                     int itemX = leftStartX + addPositions[j];
                     renderItemWithTooltip(context, mouseX, mouseY, ingredientStack, itemX, itemY, 1.0f);
                 }
@@ -177,7 +210,9 @@ public class WorkBenchScreen extends Screen {
 
             if (secondsLeft < 0) player.playSound(SoundEvent.of(new Identifier(ModConstants.MOD_ID, "pick_item")), 1.0F, 1.0F);
 
-            packetByteBuf.writeEnumConstant(this.currentRecipe);
+            packetByteBuf.writeBoolean(this.currentRecipe != null);
+
+            if (this.currentRecipe != null) packetByteBuf.writeEnumConstant(this.currentRecipe);
 
             ClientPlayNetworking.send(PacketIDS.WORKBENCH_BUTTON_CLICK_C2S, packetByteBuf);
 
@@ -208,7 +243,9 @@ public class WorkBenchScreen extends Screen {
             context.getMatrices().push();
             context.getMatrices().scale(1.3f, 1.3f, 1.0F);
 
-            renderItemWithTooltip(context, mouseX, mouseY, currentResult.getDefaultStack(), iconX - 10, iconY, 1.3f);
+            if (currentResult != null) {
+                renderItemWithTooltip(context, mouseX, mouseY, currentResult.getDefaultStack(), iconX - 10, iconY, 1.3f);
+            }
 
             context.getMatrices().pop();
         } else if (this.activeCraft) {
@@ -227,7 +264,9 @@ public class WorkBenchScreen extends Screen {
             context.getMatrices().push();
             context.getMatrices().scale(1.3f, 1.3f, 1.0F);
 
-            renderItemWithTooltip(context, mouseX, mouseY, currentResult.getDefaultStack(), iconX - 10, iconY, 1.3f);
+            if (currentResult != null) {
+                renderItemWithTooltip(context, mouseX, mouseY, currentResult.getDefaultStack(), iconX - 10, iconY, 1.3f);
+            }
 
             context.getMatrices().pop();
         } else {
@@ -246,8 +285,10 @@ public class WorkBenchScreen extends Screen {
             context.getMatrices().push();
             context.getMatrices().scale(1.3f, 1.3f, 1.0F);
 
-            renderItemWithTooltip(context, mouseX, mouseY, new ItemStack(currentRecipe.getResult()), iconX - 30, iconY, 1.3f);
-            context.drawCenteredTextWithShadow(this.textRenderer, formatTime(currentRecipe.getSeconds()), iconX + 10, iconY + 5, 0xFFFFFF);
+            if (currentRecipe != null && currentRecipe.getResult() != null) {
+                renderItemWithTooltip(context, mouseX, mouseY, new ItemStack(currentRecipe.getResult()), iconX - 30, iconY, 1.3f);
+                context.drawCenteredTextWithShadow(this.textRenderer, formatTime(currentRecipe.getSeconds()), iconX + 10, iconY + 5, 0xFFFFFF);
+            }
 
             context.getMatrices().pop();
         }

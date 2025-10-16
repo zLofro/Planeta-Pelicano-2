@@ -2,6 +2,7 @@ package me.lofro.pelicano2.client.network.receivers;
 
 import me.lofro.pelicano2.client.KeyBinds;
 import me.lofro.pelicano2.client.ModClient;
+import me.lofro.pelicano2.client.screens.bosses.BossesScreen;
 import me.lofro.pelicano2.client.screens.missions.MissionAcceptScreen;
 import me.lofro.pelicano2.client.screens.missions.MissionViewScreen;
 import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
@@ -87,6 +88,14 @@ public class ClientReceivers {
                     } else {
                         client.setScreen(new WorkBenchScreen(client.player, secondsRemaining, activeCraft));
                     }
+                }
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDS.OPEN_BOSSES_SCREEN_S2C, (client, handler, buf, responseSender) -> {
+            client.execute(() -> {
+                if (client.player != null) {
+                    client.setScreen(new BossesScreen(client.player));
                 }
             });
         });

@@ -84,7 +84,7 @@ public class ServerReceivers {
                     ServerPlayNetworking.send(serverPlayerEntity, PacketIDS.OPEN_SKILLS_SCREEN_S2C, buf);
                 }
                 case BOSSES -> {
-                    //TODO
+                    ServerPlayNetworking.send(serverPlayerEntity, PacketIDS.OPEN_BOSSES_SCREEN_S2C, PacketByteBufs.create());
                 }
             }
         });
@@ -126,24 +126,30 @@ public class ServerReceivers {
         ServerPlayNetworking.registerGlobalReceiver(PacketIDS.WORKBENCH_BUTTON_CLICK_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
             boolean noTime = packetByteBuf.readBoolean();
 
-            WorkBenchRecipe recipe = packetByteBuf.readEnumConstant(WorkBenchRecipe.class);
+            boolean existsSelectedRecipe = packetByteBuf.readBoolean();
 
-            WorkBenchManager workBenchManager = Main.getInstance().serverManager().getWorkBenchManager();
+            if (existsSelectedRecipe) {
+                WorkBenchRecipe recipe = packetByteBuf.readEnumConstant(WorkBenchRecipe.class);
 
-            if (noTime) {
-                if (workBenchManager.isReady(serverPlayerEntity.getUuid())) {
-                    var item = workBenchManager.getWorkBenchData().getCrafts().get(serverPlayerEntity.getUuid()).getLeft();
-                    serverPlayerEntity.sendMessage(Text.literal("Has fabricado exitosamente un ").append(item.getName()).formatted(Formatting.LIGHT_PURPLE));
-                    workBenchManager.claimResult(serverPlayerEntity);
-                } else {
-                    if (workBenchManager.startCraft(serverPlayerEntity, recipe)) {
-                        serverPlayerEntity.sendMessage(Text.literal("Ha comenzado la fabricacion " + workBenchManager.getActiveCrafts().get(serverPlayerEntity.getUuid()).getItem().getName().getString()).formatted(Formatting.YELLOW));
+                WorkBenchManager workBenchManager = Main.getInstance().serverManager().getWorkBenchManager();
+
+                if (noTime) {
+                    if (workBenchManager.isReady(serverPlayerEntity.getUuid())) {
+                        var item = workBenchManager.getWorkBenchData().getCrafts().get(serverPlayerEntity.getUuid()).getLeft();
+                        serverPlayerEntity.sendMessage(Text.literal("Has fabricado exitosamente un ").append(item.getName()).formatted(Formatting.LIGHT_PURPLE));
+                        workBenchManager.claimResult(serverPlayerEntity);
                     } else {
-                        serverPlayerEntity.sendMessage(Text.literal("No tienes los items necesarios para fabricar ese objeto.").formatted(Formatting.RED));
+                        if (workBenchManager.startCraft(serverPlayerEntity, recipe)) {
+                            serverPlayerEntity.sendMessage(Text.literal("Ha comenzado la fabricación " + workBenchManager.getActiveCrafts().get(serverPlayerEntity.getUuid()).getItem().getName().getString()).formatted(Formatting.YELLOW));
+                        } else {
+                            serverPlayerEntity.sendMessage(Text.literal("No tienes los items necesarios para fabricar ese objeto.").formatted(Formatting.RED));
+                        }
                     }
+                } else {
+                    serverPlayerEntity.sendMessage(Text.literal("¡Ya hay un crafteo en curso!").formatted(Formatting.RED));
                 }
             } else {
-                serverPlayerEntity.sendMessage(Text.literal("¡Ya hay un crafteo en curso!").formatted(Formatting.RED));
+                serverPlayerEntity.sendMessage(Text.literal("No has seleccionado ningún crafteo.").formatted(Formatting.RED));
             }
         });
     }
