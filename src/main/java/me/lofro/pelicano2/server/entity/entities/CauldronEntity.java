@@ -29,6 +29,8 @@ import software.bernie.geckolib.core.object.PlayState;
 
 public class CauldronEntity extends PathAwareEntity implements GeoEntity {
 
+    //TODO GUARDAR TIEMPO ENTRE RELOADS
+
     private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
 
     private static final TrackedData<Boolean> COOKING = DataTracker.registerData(CauldronEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -40,6 +42,8 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
 
     public CauldronEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
+
+        setPersistent();
     }
 
     @Override
@@ -80,7 +84,7 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
 
     public void setCookReady(boolean value) {
         if (value) {
-            this.setCustomName(Text.literal("Objeto listo"));
+            this.setCustomName(Text.literal("Objeto listo").formatted(Formatting.YELLOW));
             this.setCustomNameVisible(true);
         } else {
             this.setCustomName(null);

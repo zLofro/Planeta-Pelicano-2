@@ -41,6 +41,8 @@ public class VoidFountainEntity extends PathAwareEntity implements GeoEntity {
 
     public VoidFountainEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
+
+        setPersistent();
     }
 
     @Override

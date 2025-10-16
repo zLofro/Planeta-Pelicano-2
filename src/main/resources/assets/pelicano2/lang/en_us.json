@@ -2,5 +2,11 @@
   "item.pelicano2.upgrade_ball": "Bola de mejora",
   "item.pelicano2.human_upgrade_potion": "Poción de mejora humana",
   "category.pelicano2.keys": "Planeta Pelicano",
-  "key.pelicano2.open_selection_screen": "Open selection screen"
+  "key.pelicano2.open_selection_screen": "Open selection screen",
+  "entity.pelicano2.gnome_table": "Mesa de trabajo",
+  "entity.pelicano2.cauldron": "Caldero",
+  "entity.pelicano2.void_fountain": "Fuente del vacio eterno",
+  "entity.pelicano2.npc": "NPC",
+  "entity.pelicano2.nicte_missions": "NPC Nicte",
+  "entity.pelicano2.guide_missions": "NPC Guia"
 }

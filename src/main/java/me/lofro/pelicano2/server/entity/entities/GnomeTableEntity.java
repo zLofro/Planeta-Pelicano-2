@@ -27,6 +27,8 @@ public class GnomeTableEntity extends PathAwareEntity implements GeoEntity {
 
     public GnomeTableEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
+
+        setPersistent();
     }
 
     @Override

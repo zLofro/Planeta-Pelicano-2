@@ -357,7 +357,7 @@ public class WorkBenchScreen extends Screen {
         int contentHeight = content * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
-        int scrollStep = 10;
+        int scrollStep = 6;
         scrollOffset = Math.max(0, Math.min(scrollOffset - (int) amount * scrollStep, maxScroll));
 
         return true;

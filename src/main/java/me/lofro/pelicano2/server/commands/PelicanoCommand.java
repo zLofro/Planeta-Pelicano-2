@@ -169,7 +169,7 @@ public class PelicanoCommand {
         MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
         players.forEach(player -> {
             commandContext.getSource().sendMessage(Text.of("Has completado la mision " + mission.getTitle().getString() + " al jugador " + player.getName().getString()));
-            missionManager.complete(mission, player.getUuid());
+            missionManager.complete(mission, player);
         });
 
         return Command.SINGLE_SUCCESS;

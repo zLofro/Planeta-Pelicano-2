@@ -38,6 +38,8 @@ public class GuideMissionsEntity extends PathAwareEntity implements GeoEntity {
 
     public GuideMissionsEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
+
+        setPersistent();
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

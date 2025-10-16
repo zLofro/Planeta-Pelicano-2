@@ -39,6 +39,8 @@ public class NPCEntity extends PathAwareEntity implements GeoEntity {
 
     public NPCEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
+
+        setPersistent();
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

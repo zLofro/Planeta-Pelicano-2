@@ -120,7 +120,7 @@ public class UpdatesLogScreen extends Screen {
         int contentHeight = updatesInfo.size() * rowHeight;
         int maxScroll = Math.max(0, contentHeight - scrollHeight);
 
-        int scrollStep = 10; // píxeles por tick de scroll (ajustable para suavidad)
+        int scrollStep = 6; // píxeles por tick de scroll (ajustable para suavidad)
         scrollOffset = Math.max(0, Math.min(scrollOffset - (int) amount * scrollStep, maxScroll));
 
         return true;

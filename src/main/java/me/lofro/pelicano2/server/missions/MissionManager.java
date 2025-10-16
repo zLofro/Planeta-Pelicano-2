@@ -14,8 +14,13 @@ import me.lofro.pelicano2.server.entity.entities.NicteMissionsEntity;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -66,14 +71,21 @@ public class MissionManager implements Restorable {
         }
     }
 
-    public void complete(Missions mission, UUID playerUUID) {
-        if (!completed(playerUUID, mission)) {
-            this.missionData.getCompletedMissions().get(playerUUID).add(mission);
+    public void complete(Missions mission, ServerPlayerEntity player) {
+        if (!completed(player.getUuid(), mission)) {
+            this.missionData.getCompletedMissions().get(player.getUuid()).add(mission);
 
-            removeActive(mission, playerUUID);
+            removeActive(mission, player.getUuid());
         }
 
-        // TODO EFECTOS VISUALES DE COMPLETAR
+        //TODO EFECTOS
+
+        for (Pair<Item, Integer> reward : mission.getReward()) {
+            if (reward.getLeft() != null) {
+                player.giveItemStack(new ItemStack(reward.getLeft(), reward.getRight()));
+                player.sendMessage(Text.literal("Has recibido x" + reward.getRight() + " " + reward.getLeft().getName().getString()).formatted(Formatting.GREEN));
+            }
+        }
     }
 
     public void removeActive(Missions mission, UUID playerUUID) {

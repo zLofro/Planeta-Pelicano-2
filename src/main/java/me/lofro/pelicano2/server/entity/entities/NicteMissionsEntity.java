@@ -38,6 +38,8 @@ public class NicteMissionsEntity extends PathAwareEntity implements GeoEntity {
 
     public NicteMissionsEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
+
+        setPersistent();
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
