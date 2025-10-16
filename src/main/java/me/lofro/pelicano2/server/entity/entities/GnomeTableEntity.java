@@ -8,6 +8,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -77,6 +78,31 @@ public class GnomeTableEntity extends PathAwareEntity implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        // evita el despawn por completo
+        return false;
+    }
+
+    @Override
+    public boolean cannotDespawn() {
+        return true;
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.getBoolean("PersistenceRequired")) {
+            this.setPersistent();
+        }
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putBoolean("PersistenceRequired", true);
     }
 
 }

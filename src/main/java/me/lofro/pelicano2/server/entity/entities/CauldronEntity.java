@@ -12,6 +12,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -28,8 +29,6 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 
 public class CauldronEntity extends PathAwareEntity implements GeoEntity {
-
-    //TODO GUARDAR TIEMPO ENTRE RELOADS
 
     private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
 
@@ -64,6 +63,17 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
     }
 
     @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        // evita el despawn por completo
+        return false;
+    }
+
+    @Override
+    public boolean cannotDespawn() {
+        return true;
+    }
+
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(COOKING, false);
@@ -84,7 +94,7 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
 
     public void setCookReady(boolean value) {
         if (value) {
-            this.setCustomName(Text.literal("Objeto listo").formatted(Formatting.YELLOW));
+            this.setCustomName(Text.literal("¡Objeto listo!").formatted(Formatting.BOLD).formatted(Formatting.YELLOW));
             this.setCustomNameVisible(true);
         } else {
             this.setCustomName(null);
@@ -180,6 +190,29 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.cookingTicks = nbt.getInt("cookingTicks");
+        if (cookingTicks > 0) {
+            setCooking(true);
+        }
+
+        if (cookingTicks <= -1) {
+            setCookReady(true);
+        }
+        if (nbt.getBoolean("PersistenceRequired")) {
+            this.setPersistent();
+        }
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putInt("cookingTicks", cookingTicks);
+        nbt.putBoolean("PersistenceRequired", true);
     }
 
 }

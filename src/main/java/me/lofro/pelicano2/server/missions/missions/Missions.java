@@ -67,7 +67,7 @@ public enum Missions {
             false,
             new Identifier(ModConstants.MOD_ID, "nicte"),
             Text.literal("Consigue los instrumentos").styled(s -> s.withColor(0x444444)).append(Text.literal(" \uE104 \uE100").formatted(Formatting.WHITE))),
-    ALAS_DE_SOMBRA(new Pair[]{new Pair<>(OtherModUtils.getOtherModItem("more_totems_of_undying", "skeletal_totem_of_undying"), 1)}, Text.of("Alas de sombra"), Text.literal("""
+    ALAS_DE_SOMBRA(new Pair[]{new Pair<>(OtherModUtils.getOtherModItem("moretotems", "skeletal_totem_of_undying"), 1)}, Text.of("Alas de sombra"), Text.literal("""
             Un vecino lejano está siendo atacado por buitres hambrientos. Su casa, que alguna vez fue tranquila, ahora está rodeada por estas aves que no le dan descanso.
             
             Elimina a todos los buitres en esa zona y asegura la casa del vecino.

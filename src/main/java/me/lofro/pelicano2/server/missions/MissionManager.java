@@ -5,6 +5,7 @@ import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.global.data.api.Restorable;
 import me.lofro.pelicano2.global.data.util.JsonConfig;
 import me.lofro.pelicano2.global.network.PacketIDS;
+import me.lofro.pelicano2.global.utils.ModConstants;
 import me.lofro.pelicano2.server.ModServer;
 import me.lofro.pelicano2.server.missions.data.MissionData;
 import me.lofro.pelicano2.server.entity.ModEntities;
@@ -18,8 +19,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -78,12 +82,13 @@ public class MissionManager implements Restorable {
             removeActive(mission, player.getUuid());
         }
 
-        //TODO EFECTOS
+        player.sendMessage(Text.literal("¡Has completado exitosamente la misión " + mission.getTitle()).formatted(Formatting.GREEN));
+        player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "complete_mission")), SoundCategory.MASTER, 1.0f, 1.0f);
 
         for (Pair<Item, Integer> reward : mission.getReward()) {
             if (reward.getLeft() != null) {
                 player.giveItemStack(new ItemStack(reward.getLeft(), reward.getRight()));
-                player.sendMessage(Text.literal("Has recibido x" + reward.getRight() + " " + reward.getLeft().getName().getString()).formatted(Formatting.GREEN));
+                player.sendMessage(Text.literal("Has recibido x" + reward.getRight() + " " + reward.getLeft().getName().getString()).formatted(Formatting.AQUA));
             }
         }
     }

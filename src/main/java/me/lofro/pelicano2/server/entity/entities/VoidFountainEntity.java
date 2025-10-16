@@ -12,6 +12,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -127,6 +128,31 @@ public class VoidFountainEntity extends PathAwareEntity implements GeoEntity {
 
             Main.getInstance().serverManager().getSkillTreeManager().addUpgradePoints(player.getUuid(), 1);
         }
+    }
+
+    @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        // evita el despawn por completo
+        return false;
+    }
+
+    @Override
+    public boolean cannotDespawn() {
+        return true;
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.getBoolean("PersistenceRequired")) {
+            this.setPersistent();
+        }
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putBoolean("PersistenceRequired", true);
     }
 
 }

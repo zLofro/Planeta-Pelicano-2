@@ -126,6 +126,7 @@ public class GuideMissionsEntity extends PathAwareEntity implements GeoEntity {
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putString("Mission", this.getMission().name());
+        nbt.putBoolean("PersistenceRequired", true);
     }
 
     @Override
@@ -134,6 +135,20 @@ public class GuideMissionsEntity extends PathAwareEntity implements GeoEntity {
         if (nbt.contains("Mission")) {
             this.setMission(Missions.valueOf(nbt.getString("Mission")));
         }
+        if (nbt.getBoolean("PersistenceRequired")) {
+            this.setPersistent();
+        }
+    }
+
+    @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        // evita el despawn por completo
+        return false;
+    }
+
+    @Override
+    public boolean cannotDespawn() {
+        return true;
     }
 
 }
