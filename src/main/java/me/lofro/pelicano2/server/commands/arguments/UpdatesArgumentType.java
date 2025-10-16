@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import me.lofro.pelicano2.server.updates.Updates;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -46,5 +47,13 @@ public class UpdatesArgumentType implements ArgumentType<Updates> {
     public Collection<String> getExamples() {
         return EXAMPLES;
     }
+
+    public static final SuggestionProvider<ServerCommandSource> UPDATES_SUGGESTIONS =
+            (context, builder) -> {
+                for (Updates update : Updates.values()) {
+                    builder.suggest(update.name());
+                }
+                return builder.buildFuture();
+            };
 
 }

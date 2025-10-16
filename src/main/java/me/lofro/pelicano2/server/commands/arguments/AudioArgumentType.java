@@ -5,7 +5,9 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import me.lofro.pelicano2.server.audio.Audios;
+import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.Collection;
@@ -46,4 +48,13 @@ public class AudioArgumentType implements ArgumentType<Audios> {
     public Collection<String> getExamples() {
         return EXAMPLES;
     }
+
+    public static final SuggestionProvider<ServerCommandSource> UPDATES_SUGGESTIONS =
+            (context, builder) -> {
+                for (Audios audio : Audios.values()) {
+                    builder.suggest(audio.name());
+                }
+                return builder.buildFuture();
+            };
+
 }

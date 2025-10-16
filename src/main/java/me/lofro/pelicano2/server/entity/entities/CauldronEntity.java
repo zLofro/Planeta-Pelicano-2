@@ -1,6 +1,7 @@
 package me.lofro.pelicano2.server.entity.entities;
 
 import me.lofro.pelicano2.global.item.ModItems;
+import me.lofro.pelicano2.global.utils.ModConstants;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -13,10 +14,13 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -112,6 +116,8 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
                 this.setCookReady(false);
 
                 player.sendMessage(Text.literal("Has recibido un orbe de mejora.").formatted(Formatting.AQUA));
+
+                player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "taking_object_cauldron")), SoundCategory.MASTER, 1.0f, 1.0f);
             } else {
                 if (stack.isOf(ModItems.HUMAN_UPGRADE_POTION)) {
                     if (!this.isCooking()) {
@@ -126,6 +132,8 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
                                 player.getInventory().setStack(player.getInventory().selectedSlot, ItemStack.EMPTY);
                             }
                         }
+
+                        player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "cooking_cauldron")), SoundCategory.MASTER, 1.0f, 1.0f);
                     } else {
                         player.sendMessage(Text.literal("Ya se está haciendo un objeto.").formatted(Formatting.RED), false);
                     }

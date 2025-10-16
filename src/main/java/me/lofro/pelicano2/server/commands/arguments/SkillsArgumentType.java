@@ -5,7 +5,9 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import me.lofro.pelicano2.server.skills.data.Skills;
+import me.lofro.pelicano2.server.updates.Updates;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.Collection;
@@ -46,5 +48,13 @@ public class SkillsArgumentType implements ArgumentType<Skills> {
     public Collection<String> getExamples() {
         return EXAMPLES;
     }
+
+    public static final SuggestionProvider<ServerCommandSource> UPDATES_SUGGESTIONS =
+            (context, builder) -> {
+                for (Skills skill : Skills.values()) {
+                    builder.suggest(skill.name());
+                }
+                return builder.buildFuture();
+            };
 
 }

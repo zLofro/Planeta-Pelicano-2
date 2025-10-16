@@ -18,6 +18,7 @@ public class EntityRegistries {
         FabricDefaultAttributeRegistry.register(ModEntities.GNOME_TABLE, GnomeTableEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.VOID_FOUNTAIN, VoidFountainEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.CAULDRON_ENTITY, CauldronEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.ANGRY_SALMON, AngrySalmonEntity.createAttributes());
     }
 
 }

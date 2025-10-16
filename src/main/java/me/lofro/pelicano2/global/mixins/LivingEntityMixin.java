@@ -1,16 +1,27 @@
 package me.lofro.pelicano2.global.mixins;
 
 import me.lofro.pelicano2.Main;
+import me.lofro.pelicano2.server.entity.ModEntities;
+import me.lofro.pelicano2.server.entity.entities.AngrySalmonEntity;
 import me.lofro.pelicano2.server.skills.data.Skills;
+import me.lofro.pelicano2.server.updates.Updates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.SpiderEntity;
+import net.minecraft.entity.passive.SalmonEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import virtuoel.pehkui.api.ScaleData;
+import virtuoel.pehkui.api.ScaleTypes;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
@@ -57,6 +68,47 @@ public abstract class LivingEntityMixin extends Entity {
             }
         }
         return amount;
+    }
+
+    @Inject(method = "onDeath", at = @At("TAIL"))
+    private void onDeath(DamageSource source, CallbackInfo ci) {
+        if (Main.getInstance() != null) {
+            LivingEntity entity = (LivingEntity) (Object) this;
+            World world = entity.getWorld();
+            if (!world.isClient) {
+                ServerWorld serverWorld = (ServerWorld) world;
+                if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.ARANIAS_MULTIPLICAN)) {
+                    if (entity instanceof SpiderEntity spider) {
+
+                        float currentScale = ScaleTypes.BASE.getScaleData(spider).getScale();
+
+                        if (currentScale == 1.0F) {
+                            for (int i = 0; i < 3; i++) {
+                                SpiderEntity baby = EntityType.SPIDER.create(serverWorld);
+                                if (baby == null) continue;
+
+                                Vec3d pos = entity.getPos().add(
+                                        (serverWorld.random.nextDouble() - 0.5) * 1.5,
+                                        0,
+                                        (serverWorld.random.nextDouble() - 0.5) * 1.5
+                                );
+                                baby.refreshPositionAndAngles(pos.x, pos.y, pos.z, serverWorld.random.nextFloat() * 360.0F, 0.0F);
+
+                                ScaleData scale = ScaleTypes.BASE.getScaleData(baby);
+                                scale.setScale(0.5f); // la mitad de tamaño
+
+                                baby.setHealth(8.0F); // vida reducida
+                                serverWorld.spawnEntity(baby);
+                            }
+                        }
+                    }
+                } else if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.HOSTILE_SALMONS)) {
+                    if (entity instanceof SalmonEntity && !ModEntities.ANGRY_SALMON.equals(entity.getType())) {
+                        AngrySalmonEntity.spawnHorde(serverWorld, entity, 6);
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -42,6 +42,7 @@ public class PelicanoCommand {
         literalArgumentBuilder
                 .then(CommandManager.literal("audio")
                         .then(CommandManager.argument("audio", AudioArgumentType.audio())
+                                .suggests(AudioArgumentType.UPDATES_SUGGESTIONS)
                                 .then(CommandManager.argument("showSubtitles", BoolArgumentType.bool())
                                         .then(CommandManager.argument("playAudio", BoolArgumentType.bool())
                                                 .executes(commandContext -> playAudio(
@@ -67,30 +68,35 @@ public class PelicanoCommand {
                 .then(CommandManager.literal("mission")
                         .then(CommandManager.literal("spawnNPC")
                                 .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .suggests(MissionArgumentType.UPDATES_SUGGESTIONS)
                                         .then(CommandManager.argument("location", Vec3ArgumentType.vec3())
                                                 .executes(commandContext -> spawnNPC(MissionArgumentType.getMission(commandContext, "mission"),
                                                         commandContext.getSource().getWorld(),
                                                         Vec3ArgumentType.getVec3(commandContext, "location"))))))
                         .then(CommandManager.literal("forceAssign")
                                 .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .suggests(MissionArgumentType.UPDATES_SUGGESTIONS)
                                         .then(CommandManager.argument("players", EntityArgumentType.players())
                                                 .executes(commandContext -> executeForceAssign(commandContext,
                                                         MissionArgumentType.getMission(commandContext, "mission"),
                                                         EntityArgumentType.getPlayers(commandContext, "players"))))))
                         .then(CommandManager.literal("complete")
                                 .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .suggests(MissionArgumentType.UPDATES_SUGGESTIONS)
                                         .then(CommandManager.argument("players", EntityArgumentType.players())
                                                 .executes(commandContext -> executeCompleteMission(commandContext,
                                                         MissionArgumentType.getMission(commandContext, "mission"),
                                                         EntityArgumentType.getPlayers(commandContext, "players"))))))
                         .then(CommandManager.literal("unComplete")
                                 .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .suggests(MissionArgumentType.UPDATES_SUGGESTIONS)
                                         .then(CommandManager.argument("players", EntityArgumentType.players())
                                                 .executes(commandContext -> executeUnCompleteMission(commandContext,
                                                         MissionArgumentType.getMission(commandContext, "mission"),
                                                         EntityArgumentType.getPlayers(commandContext, "players"))))))
                         .then(CommandManager.literal("unAssign")
                                 .then(CommandManager.argument("mission", MissionArgumentType.mission())
+                                        .suggests(MissionArgumentType.UPDATES_SUGGESTIONS)
                                         .then(CommandManager.argument("players", EntityArgumentType.players())
                                                 .executes(commandContext -> executeUnAssignMission(commandContext,
                                                         MissionArgumentType.getMission(commandContext, "mission"),
@@ -100,6 +106,7 @@ public class PelicanoCommand {
                 .then(CommandManager.literal("set")
                         .then(CommandManager.argument("players", EntityArgumentType.players())
                                 .then(CommandManager.argument("skill", SkillsArgumentType.skill())
+                                        .suggests(SkillsArgumentType.UPDATES_SUGGESTIONS)
                                         .then(CommandManager.argument("level", IntegerArgumentType.integer())
                                                 .executes(commandContext -> executeSetSkillLevel(commandContext,
                                                         EntityArgumentType.getPlayers(commandContext, "players"),
@@ -107,15 +114,18 @@ public class PelicanoCommand {
                 .then(CommandManager.literal("get")
                         .then(CommandManager.argument("player", EntityArgumentType.player())
                                 .then(CommandManager.argument("skill", SkillsArgumentType.skill())
+                                        .suggests(SkillsArgumentType.UPDATES_SUGGESTIONS)
                                         .executes(commandContext -> executeGetSkillLevel(commandContext,
                                                 EntityArgumentType.getPlayer(commandContext, "player"), SkillsArgumentType.getSkill(commandContext, "skill")))))));
 
         literalArgumentBuilder.then(CommandManager.literal("updates")
                 .then(CommandManager.literal("unlock")
                         .then(CommandManager.argument("update", UpdatesArgumentType.updates())
+                                .suggests(UpdatesArgumentType.UPDATES_SUGGESTIONS)
                                 .executes(commandContext -> executeUnlockUpdate(commandContext, UpdatesArgumentType.getUpdate(commandContext, "update")))))
                 .then(CommandManager.literal("lock")
                         .then(CommandManager.argument("update", UpdatesArgumentType.updates())
+                                .suggests(UpdatesArgumentType.UPDATES_SUGGESTIONS)
                                 .executes(commandContext -> executeLockUpdate(commandContext, UpdatesArgumentType.getUpdate(commandContext, "update"))))));
 
         dispatcher.register(literalArgumentBuilder);

@@ -4,11 +4,16 @@ import lombok.Getter;
 import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.global.data.api.Restorable;
 import me.lofro.pelicano2.global.data.util.JsonConfig;
+import me.lofro.pelicano2.global.utils.ModConstants;
 import me.lofro.pelicano2.server.ModServer;
 import me.lofro.pelicano2.server.updates.data.UpdatesData;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
 
 import java.util.Timer;
@@ -34,7 +39,11 @@ public class UpdatesManager implements Restorable {
 
             MinecraftServer minecraftServer = modServer.minecraftServer();
 
-            startAnimation(update, minecraftServer, 5);
+            startAnimation(update, minecraftServer, 4);
+
+            minecraftServer.getPlayerManager().getPlayerList().forEach(player -> {
+                player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "update_unlocked")), SoundCategory.MASTER, 1.0f, 1.0f);
+            });
         }
     }
 
@@ -73,7 +82,8 @@ public class UpdatesManager implements Restorable {
                     minecraftServer.getPlayerManager().getPlayerList().forEach(player -> {
                         player.sendMessage(update.getSummary().copy().formatted(Formatting.DARK_PURPLE).styled(style -> style.withBold(true)));
                         player.sendMessage(update.description.copy().formatted(Formatting.LIGHT_PURPLE));
-                        //TODO SONIDO
+                        player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "update_message")), SoundCategory.MASTER, 1.0f, 1.0f);
+                        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.MASTER, 1.0f, 1.0f);
                     });
 
                     return;

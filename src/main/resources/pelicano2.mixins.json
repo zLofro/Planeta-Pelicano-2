@@ -3,8 +3,14 @@
   "package": "me.lofro.pelicano2.global.mixins",
   "compatibilityLevel": "JAVA_19",
   "mixins": [
+    "HungerManagerMixin",
+    "IllagerEntityMixin",
+    "IronGolemEntityMixin",
     "LivingEntityMixin",
-    "ServerPlayerEntityMixin"
+    "MerchantEntityMixin",
+    "ServerPlayerEntityMixin",
+    "SquidEntityMixin",
+    "ZombieEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

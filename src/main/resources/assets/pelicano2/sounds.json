@@ -113,5 +113,25 @@
     "sounds": [
       "pelicano2:claim_point"
     ]
+  },
+  "update_unlocked" : {
+    "sounds": [
+      "pelicano2:update_unlocked"
+    ]
+  },
+  "update_message" : {
+    "sounds": [
+      "pelicano2:update_message"
+    ]
+  },
+  "cooking_cauldron" : {
+    "sounds": [
+      "pelicano2:cooking_cauldron"
+    ]
+  },
+  "taking_object_cauldron" : {
+    "sounds": [
+      "pelicano2:taking_object_cauldron"
+    ]
   }
 }

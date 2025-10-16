@@ -108,4 +108,12 @@ public class ModEntities {
                     .build()
     );
 
+    public static final EntityType<AngrySalmonEntity> ANGRY_SALMON = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "angry_salmon"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, AngrySalmonEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.7f, 0.4f))
+                    .build()
+    );
+
 }

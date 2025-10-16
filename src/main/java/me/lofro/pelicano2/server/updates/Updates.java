@@ -8,11 +8,15 @@ public enum Updates {
 
     ZOMBIES_INMUNES_SOL(Text.of("Ya no se queman al amanecer. Pueden caminar libremente bajo el sol y, como si fuera poco, golpean con un 15% extra de fuerza. Los días ya no son seguros."), Text.of("LOS ZOMBIES SON INMUNES A LA LUZ DEL SOL")),
     CALAMARES_HOSTILES(Text.of("Dejan de ser criaturas pasivas. Ahora atacan al jugador en cuanto lo detectan y aplican veneno, haciendo del agua un lugar peligroso."), Text.of("LOS CALAMARES SE VUELVEN HOSTILES")),
-    MARIPOSAS_HOSTILES(Text.of("Inofensivas a simple vista, pero ahora atacan y provocan mareo temporal. Una nube de estas puede dejarte completamente desorientado."), Text.of("LAS MARIPOSAS SON HOSTILES")),
-    TEST3(Text.of("TEST TEST TEST TEST TEST TEST TEST TEST"), Text.of("Test")),
-    TEST4(Text.of("TEST TEST TEST TEST TEST TEST TEST TEST :P"), Text.of("Test test test")),
-    TEST5(Text.of("TEST TEST TEST TEST TEST TEST TEST TEST asd"), Text.of("Test prueba")),
-    TEST6(Text.of("TEST TEST TEST TEST TEST TEST TEST TEST"), Text.of("Test test"));
+    IRON_GOLEM_HOSTILES(Text.of("Ya no protegen aldeas. Son enemigos por naturaleza. Cualquier acercamiento puede ser tu sentencia."), Text.of("AHORA LOS IRON GOLEMS SON HOSTILES POR NATURALEZA.")),
+    ILLAGERS_FUEGO(Text.of("Los Illagers evolucionaron. Disparan esferas de fuego y llaman refuerzos al combate. Enfrentarse a uno puede convertirse en una invasión."), Text.of("LOS ILLAGERS LANZAN FUEGO E INVOCA MONSTRUOS")),
+    CAIDA_ITEMS(Text.of("Cada vez que recibes daño hay un 1% de probabilidad de que un objeto de tu mochila caiga al suelo. Cualquier golpe puede hacerte perder algo valioso."), Text.of("CAIDA DE ITEMS AL RECIBIR DAÑO")),
+    HOSTILE_SALMONS(Text.of("Matar un salmón desencadena su venganza. Una horda de salmones hostiles aparece para atacarte. Pescar ya no es una opción tranquila."), Text.of("EL SALMÓN RECLUTA UNA HORDA")),
+    HAMBRE_BAJO_AGUA(Text.of("Mientras estés sumergido, tu barra de hambre disminuirá un 40% más rápido. Bucear demasiado tiempo se vuelve un riesgo mortal."), Text.of("BAJO EL AGUA EL HAMBRE AUMENTA")),
+    ALDEANOS_COLOMBIANOS(Text.of("Los aldeanos adoptan “costumbres locales”: tienen un 30% de probabilidad de estafarte, vendiéndote basura por precios absurdos. Comercio bajo tu propio riesgo."), Text.of("ALDEANOS COLOMBIANOS (Y ESTAFADORES)")),
+    SUENIO_DESORDENADO(Text.of("Dormir ya no garantiza descanso. Hay un 30% de probabilidad de que tu inventario se revuelva completamente al despertar."), Text.of("SUEÑO DESORDENADO")),
+    ARANIAS_MULTIPLICAN(Text.of("Cada vez que matas una, aparecen tres más pequeñas. El exterminio se convierte en multiplicación."), Text.of("LAS ARAÑAS SE MULTIPLICAN"))
+    ;
 
     final Text description;
     final Text summary;

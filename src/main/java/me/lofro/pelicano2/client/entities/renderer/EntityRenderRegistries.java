@@ -19,6 +19,7 @@ public class EntityRenderRegistries {
         EntityRendererRegistry.register(ModEntities.GNOME_TABLE, GnomeTableRenderer::new);
         EntityRendererRegistry.register(ModEntities.VOID_FOUNTAIN, VoidFountainRenderer::new);
         EntityRendererRegistry.register(ModEntities.CAULDRON_ENTITY, CauldronRenderer::new);
+        EntityRendererRegistry.register(ModEntities.ANGRY_SALMON, AngrySalmonRenderer::new);
     }
 
 }
