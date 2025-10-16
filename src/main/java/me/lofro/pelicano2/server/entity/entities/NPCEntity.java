@@ -2,6 +2,8 @@ package me.lofro.pelicano2.server.entity.entities;
 
 import lombok.Getter;
 import me.lofro.pelicano2.Main;
+import me.lofro.pelicano2.global.accessors.ServerPlayerEntityAccessor;
+import me.lofro.pelicano2.global.utils.OtherModUtils;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.minecraft.entity.EntityType;
@@ -14,12 +16,12 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -66,6 +68,7 @@ public class NPCEntity extends PathAwareEntity implements GeoEntity {
     @Override
     protected ActionResult interactMob(PlayerEntity player, Hand hand) {
         if (!this.getWorld().isClient) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
             UUID playerUUID = player.getUuid();
 
@@ -75,7 +78,50 @@ public class NPCEntity extends PathAwareEntity implements GeoEntity {
                 ServerPlayerEntity serverPlayerEntity = Main.getInstance().serverManager().minecraftServer().getPlayerManager().getPlayer(playerUUID);
                 Main.getInstance().serverManager().getMissionManager().openAssignScreen(serverPlayerEntity, mission);
             } else {
-                player.sendMessage(Text.of("¡Ya hablaste conmigo!"));
+                if (missionManager.active(playerUUID, mission)) {
+                    switch(mission) {
+                        case ALAS_DE_SOMBRA -> {
+                            ServerPlayerEntityAccessor accessor = (ServerPlayerEntityAccessor) serverPlayer;
+
+                            if (accessor.planetaPelicano2$getVultresKilled() >= 20) {
+                                missionManager.complete(mission, serverPlayer);
+                            } else {
+                                player.sendMessage(Text.literal("¡No cazaste aún los 20 buitres!").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal("Llevas:").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal(accessor.planetaPelicano2$getVultresKilled() + "/20 buitres.").formatted(Formatting.RED));
+                            }
+                        }
+                        case VESTIDOS_INCONCLUSOS -> {
+                            Pair<Item, Integer>[] itemsNeeded = new Pair[]{new Pair<>(Items.STRING, 64)};
+                            if (missionManager.hasAllItems(serverPlayer, itemsNeeded)) {
+                                missionManager.consumeRecipeItems(serverPlayer, itemsNeeded);
+                                missionManager.complete(mission, serverPlayer);
+                            } else {
+                                player.sendMessage(Text.literal("¡No tienes los objetos que te pedí!").formatted(Formatting.RED));
+                            }
+                        }
+                        case DULCE_REMEDIO -> {
+                            Pair<Item, Integer>[] itemsNeeded = new Pair[]{new Pair<>(Items.HONEY_BOTTLE, 20)};
+                            if (missionManager.hasAllItems(serverPlayer, itemsNeeded)) {
+                                missionManager.consumeRecipeItems(serverPlayer, itemsNeeded);
+                                missionManager.complete(mission, serverPlayer);
+                            } else {
+                                player.sendMessage(Text.literal("¡No tienes los objetos que te pedí!").formatted(Formatting.RED));
+                            }
+                        }
+                        case EL_ANTOJO_IMPOSIBLE -> {
+                            Pair<Item, Integer>[] itemsNeeded = new Pair[]{new Pair<>(OtherModUtils.getOtherModItem("supplementaries", "candy"), 64)};
+                            if (missionManager.hasAllItems(serverPlayer, itemsNeeded)) {
+                                missionManager.consumeRecipeItems(serverPlayer, itemsNeeded);
+                                missionManager.complete(mission, serverPlayer);
+                            } else {
+                                player.sendMessage(Text.literal("¡No tienes los objetos que te pedí!").formatted(Formatting.RED));
+                            }
+                        }
+                    }
+                } else {
+                    player.sendMessage(Text.of("¡Ya hablaste conmigo!"));
+                }
             }
         }
         return ActionResult.SUCCESS;

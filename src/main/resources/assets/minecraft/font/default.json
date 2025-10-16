@@ -76,6 +76,34 @@
       "ascent": 10,
       "height": 16,
       "chars": ["\uE110"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/handpan.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE111"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/lute.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE112"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/piano.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE113"]
+    },
+    {
+      "type": "bitmap",
+      "file": "pelicano2:font/trumpet.png",
+      "ascent": 10,
+      "height": 16,
+      "chars": ["\uE114"]
     }
   ]
 }

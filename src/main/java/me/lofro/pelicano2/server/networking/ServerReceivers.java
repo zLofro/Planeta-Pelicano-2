@@ -2,6 +2,7 @@ package me.lofro.pelicano2.server.networking;
 
 import me.lofro.pelicano2.Main;
 import me.lofro.pelicano2.client.screens.selection.SelectionScreen;
+import me.lofro.pelicano2.global.accessors.ServerPlayerEntityAccessor;
 import me.lofro.pelicano2.global.network.PacketIDS;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
@@ -10,6 +11,7 @@ import me.lofro.pelicano2.server.skills.data.Skills;
 import me.lofro.pelicano2.server.updates.Updates;
 import me.lofro.pelicano2.server.workbench.WorkBenchManager;
 import me.lofro.pelicano2.server.workbench.WorkBenchRecipe;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -150,6 +152,37 @@ public class ServerReceivers {
                 }
             } else {
                 serverPlayerEntity.sendMessage(Text.literal("No has seleccionado ningún crafteo.").formatted(Formatting.RED));
+            }
+        });
+
+        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killedEntity) -> {
+            if (entity instanceof ServerPlayerEntity player && Main.getInstance() != null) {
+                ServerPlayerEntityAccessor accessor = (ServerPlayerEntityAccessor) player;
+
+                String id = killedEntity.getType().toString();
+
+                MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
+
+                if (id.contains("zombie") && missionManager.active(player.getUuid(), Missions.DEFENDER_SYLMORIA)) {
+                    accessor.planetaPelicano2$incrementZombieKills();
+                    player.sendMessage(Text.literal("Has matado a un " + killedEntity.getName().getString() + ". " + accessor.planetaPelicano2$getZombiesKilled() + "/20.").formatted(Formatting.YELLOW));
+                }
+                else if (id.contains("skeleton") && missionManager.active(player.getUuid(), Missions.DEFENDER_SYLMORIA)) {
+                    accessor.planetaPelicano2$incrementSkeletonKills();
+                    player.sendMessage(Text.literal("Has matado a un " + killedEntity.getName().getString() + ". " + accessor.planetaPelicano2$getSkeletonsKilled() + "/20.").formatted(Formatting.YELLOW));
+                }
+                else if (id.contains("spider") && missionManager.active(player.getUuid(), Missions.DEFENDER_SYLMORIA)) {
+                    accessor.planetaPelicano2$incrementSpiderKills();
+                    player.sendMessage(Text.literal("Has matado a un " + killedEntity.getName().getString() + ". " + accessor.planetaPelicano2$getSpidersKilled() + "/10.").formatted(Formatting.YELLOW));
+                }
+                else if (id.contains("creeper") && missionManager.active(player.getUuid(), Missions.DEFENDER_SYLMORIA)) {
+                    accessor.planetaPelicano2$incrementCreeperKills();
+                    player.sendMessage(Text.literal("Has matado a un " + killedEntity.getName().getString() + ". " + accessor.planetaPelicano2$getCreepersKilled() + "/10.").formatted(Formatting.YELLOW));
+                }
+                else if (id.contains("vulture") && missionManager.active(player.getUuid(), Missions.ALAS_DE_SOMBRA)) {
+                    accessor.planetaPelicano2$incrementVultureKills();
+                    player.sendMessage(Text.literal("Has matado a un " + killedEntity.getName().getString() + ". " + accessor.planetaPelicano2$getVultresKilled() + "/20.").formatted(Formatting.YELLOW));
+                }
             }
         });
     }

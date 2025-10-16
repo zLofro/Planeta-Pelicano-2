@@ -13,6 +13,7 @@ import me.lofro.pelicano2.server.entity.entities.GuideMissionsEntity;
 import me.lofro.pelicano2.server.entity.entities.NPCEntity;
 import me.lofro.pelicano2.server.entity.entities.NicteMissionsEntity;
 import me.lofro.pelicano2.server.missions.missions.Missions;
+import me.lofro.pelicano2.server.workbench.WorkBenchRecipe;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.Item;
@@ -82,7 +83,7 @@ public class MissionManager implements Restorable {
             removeActive(mission, player.getUuid());
         }
 
-        player.sendMessage(Text.literal("¡Has completado exitosamente la misión " + mission.getTitle()).formatted(Formatting.GREEN));
+        player.sendMessage(Text.literal("¡Has completado exitosamente la misión " + mission.getTitle().getString()).formatted(Formatting.GREEN));
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "complete_mission")), SoundCategory.MASTER, 1.0f, 1.0f);
 
         for (Pair<Item, Integer> reward : mission.getReward()) {
@@ -176,6 +177,101 @@ public class MissionManager implements Restorable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Elimina del inventario del jugador los ítems requeridos por la receta.
+     * Asume que el jugador tiene todos los ítems (ya verificado previamente).
+     *
+     * @param player el jugador
+     * @param stacksInfo la receta a consumir
+     */
+    public void consumeRecipeItems(ServerPlayerEntity player, Pair<Item, Integer>[] stacksInfo) {
+        if (stacksInfo == null) return;
+
+        for (Pair<Item, Integer> stackInfo : stacksInfo) {
+            if (stackInfo.getLeft() == null) break;
+
+            ItemStack stackNeeded = new ItemStack(stackInfo.getLeft(), stackInfo.getRight());
+
+            int remainingToConsume = stackNeeded.getCount(); // cantidad requerida
+
+            // Recorremos el inventario buscando ítems del mismo tipo
+            for (int i = 0; i < player.getInventory().size(); i++) {
+                ItemStack invStack = player.getInventory().getStack(i);
+
+                // Coincidencia exacta de tipo de ítem
+                if (invStack.isOf(stackNeeded.getItem()) && !invStack.isEmpty()) {
+                    int available = invStack.getCount();
+
+                    // Determinamos cuántos tomar de este stack
+                    int toConsume = Math.min(available, remainingToConsume);
+                    invStack.decrement(toConsume);
+                    remainingToConsume -= toConsume;
+
+                    // Si ya consumimos lo necesario, pasamos al siguiente ingrediente
+                    if (remainingToConsume <= 0) {
+                        break;
+                    }
+                }
+            }
+
+            // En teoría nunca debería pasar si antes se verificó con hasAllItems()
+            if (remainingToConsume > 0) {
+                System.err.println("Advertencia: faltaron ítems al consumir receta ("
+                        + stackNeeded.getItem().toString() + "), faltaban " + remainingToConsume);
+            }
+        }
+
+        // Actualiza el inventario del jugador para reflejar los cambios visualmente
+        player.getInventory().markDirty();
+    }
+
+    /**
+     * Comprueba si el jugador tiene todos los ítems requeridos (con cantidades incluidas).
+     * No los consume, solo verifica.
+     */
+    public boolean hasAllItems(ServerPlayerEntity player, Pair<Item, Integer>[] stacksInfo) {
+        // Copia mutable del inventario (solo los counts)
+        int[] availableCounts = new int[player.getInventory().size()];
+
+        // Guardamos una copia de las cantidades disponibles
+        for (int i = 0; i < player.getInventory().size(); i++) {
+            ItemStack stack = player.getInventory().getStack(i);
+            availableCounts[i] = stack.getCount();
+        }
+
+        for (Pair<Item, Integer> stackInfo : stacksInfo) {
+            if (stackInfo.getLeft() == null) return false;
+
+            ItemStack required = new ItemStack(stackInfo.getLeft(), stackInfo.getRight());
+
+            int requiredCount = required.getCount();
+            boolean fulfilled = false;
+
+            // Recorremos el inventario para ver si hay suficientes ítems iguales
+            for (int i = 0; i < player.getInventory().size(); i++) {
+                ItemStack invStack = player.getInventory().getStack(i);
+
+                if (invStack.isOf(required.getItem()) && availableCounts[i] > 0) {
+                    int used = Math.min(availableCounts[i], requiredCount);
+                    availableCounts[i] -= used;
+                    requiredCount -= used;
+
+                    if (requiredCount <= 0) {
+                        fulfilled = true;
+                        break;
+                    }
+                }
+            }
+
+            // Si después de revisar el inventario aún faltan ítems no cumple
+            if (!fulfilled && requiredCount > 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

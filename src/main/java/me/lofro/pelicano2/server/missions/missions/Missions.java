@@ -14,7 +14,7 @@ import net.minecraft.util.Pair;
 @Getter
 public enum Missions {
     UN_LUGAR_PARA_DESCANSAR(new Pair[]{new Pair<>(OtherModUtils.getOtherModItem("dungeonnowloading", "great_experience_bottle"), 1),
-            new Pair<>(OtherModUtils.getOtherModItem("artifacts", "power_glove"), 1), new Pair<>(OtherModUtils.getOtherModItem("inmersive_melodies", "bagpipe"), 1)},
+            new Pair<>(OtherModUtils.getOtherModItem("artifacts", "power_glove"), 1), new Pair<>(OtherModUtils.getOtherModItem("immersive_melodies", "bagpipe"), 1)},
             Text.of("Un lugar para descansar"), Text.of("""
             Un héroe siempre necesita un refugio seguro, un lugar para guardar lo valioso y descansar sin temor. Sin hogar, hasta el más fuerte se pierde.
             
@@ -53,14 +53,14 @@ public enum Missions {
             """),
             false,
             new Identifier(ModConstants.MOD_ID, "nicte"),
-            Text.literal("Viaja a los campos y captura 30 mariposas con la red").styled(s -> s.withColor(0x444444)).append(Text.literal(" \uE106 \uE100").formatted(Formatting.WHITE))),
+            Text.literal("Captura y trae 30 mariposas con la red").styled(s -> s.withColor(0x444444)).append(Text.literal(" \uE106 \uE100").formatted(Formatting.WHITE))),
     LA_MELODIA_PERDIDA(new Pair[]{new Pair<>(Items.GOLDEN_APPLE, 10), new Pair<>(ModItems.HUMAN_UPGRADE_POTION, 1)}, Text.of("La melodía perdida"),
             Text.of("""
-                    ¡No me hables ahora, estoy a punto de explotar! … Perdona, grité más de la cuenta. Esperaba un paquete con instrumentos hoy y lo retrasaron una semana. ¿Qué haré mientras tanto? Si pudieras ayudarme a reunir los de esta lista, te lo agradecería. Y tranquilo, te pagaré por ello.
-                    
-                    Consigue los instrumentos que aparecen en la lista y tráemelos a este mismo lugar.
-                    
+                    Esperaba un paquete con instrumentos hoy y lo retrasaron una semana. ¿Qué haré mientras tanto? Si pudieras ayudarme a reunir los de esta lista, te lo agradecería. Y tranquilo, te pagaré por ello.
+
                     Te recompensaré con un premio fabuloso.
+                    
+                    Estos son: \uE111 \uE112 \uE113 \uE114
                     
                     Recompensa: \uE104 \uE100
                     """),
@@ -104,7 +104,7 @@ public enum Missions {
             true,
             new Identifier(ModConstants.MOD_ID, "textures/entity/npc/kianny.png"),
             Text.literal("Recolecta 20 botellas de miel").styled(s -> s.withColor(0x444444)).append(Text.literal(" \uE105 \uE102").formatted(Formatting.WHITE))),
-    EL_ANTOJO_IMPOSIBLE(new Pair[]{new Pair<>(ModItems.HUMAN_UPGRADE_POTION, 1), new Pair<>(OtherModUtils.getOtherModItem("inmersive_melodies", "flute"), 1)},
+    EL_ANTOJO_IMPOSIBLE(new Pair[]{new Pair<>(ModItems.HUMAN_UPGRADE_POTION, 1), new Pair<>(OtherModUtils.getOtherModItem("immersive_melodies", "flute"), 1)},
             Text.of("El antojo imposible"), Text.of("""
             Desde esta mañana solo pienso en dulces. He buscado por todas partes y no queda ninguno. Si me traes algunos, sabré compensarte.
             

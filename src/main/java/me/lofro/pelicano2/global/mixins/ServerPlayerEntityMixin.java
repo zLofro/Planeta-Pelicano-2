@@ -1,12 +1,14 @@
 package me.lofro.pelicano2.global.mixins;
 
 import me.lofro.pelicano2.Main;
+import me.lofro.pelicano2.global.accessors.ServerPlayerEntityAccessor;
 import me.lofro.pelicano2.global.item.ModItems;
 import me.lofro.pelicano2.server.entity.entities.VoidFountainEntity;
 import me.lofro.pelicano2.server.updates.Updates;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -25,7 +27,48 @@ import java.util.List;
 import java.util.Random;
 
 @Mixin(ServerPlayerEntity.class)
-public class ServerPlayerEntityMixin {
+public class ServerPlayerEntityMixin implements ServerPlayerEntityAccessor {
+
+    @Unique
+    int zombiesKilled = 0;
+    @Unique
+    int skeletonsKilled = 0;
+    @Unique
+    int spidersKilled = 0;
+    @Unique
+    int creepersKilled = 0;
+    @Unique
+    int vultresKilled = 0;
+
+    @Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))
+    private void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
+        nbt.putInt("zombiesKilled", this.zombiesKilled);
+        nbt.putInt("skeletonsKilled", this.skeletonsKilled);
+        nbt.putInt("spidersKilled", this.spidersKilled);
+        nbt.putInt("creepersKilled", this.creepersKilled);
+        nbt.putInt("vultresKilled", this.vultresKilled);
+    }
+
+    @Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
+    private void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
+        if (nbt.contains("zombiesKilled")) this.zombiesKilled = nbt.getInt("zombiesKilled");
+        if (nbt.contains("skeletonsKilled")) this.skeletonsKilled = nbt.getInt("skeletonsKilled");
+        if (nbt.contains("spidersKilled")) this.spidersKilled = nbt.getInt("spidersKilled");
+        if (nbt.contains("creepersKilled")) this.creepersKilled = nbt.getInt("creepersKilled");
+        if (nbt.contains("vultresKilled")) this.vultresKilled = nbt.getInt("vultresKilled");
+    }
+
+    @Override public void planetaPelicano2$incrementZombieKills() { this.zombiesKilled++; }
+    @Override public void planetaPelicano2$incrementSkeletonKills() { this.skeletonsKilled++; }
+    @Override public void planetaPelicano2$incrementSpiderKills() { this.spidersKilled++; }
+    @Override public void planetaPelicano2$incrementCreeperKills() { this.creepersKilled++; }
+    @Override public void planetaPelicano2$incrementVultureKills() { this.vultresKilled++; }
+
+    @Override public int planetaPelicano2$getZombiesKilled() { return this.zombiesKilled; }
+    @Override public int planetaPelicano2$getSkeletonsKilled() { return this.skeletonsKilled; }
+    @Override public int planetaPelicano2$getSpidersKilled() { return this.spidersKilled; }
+    @Override public int planetaPelicano2$getCreepersKilled() { return this.creepersKilled; }
+    @Override public int planetaPelicano2$getVultresKilled() { return this.vultresKilled; }
 
     @Unique
     private static final Random random = new Random();

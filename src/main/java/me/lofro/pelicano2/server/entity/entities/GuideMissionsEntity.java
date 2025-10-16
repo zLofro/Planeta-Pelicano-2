@@ -1,6 +1,8 @@
 package me.lofro.pelicano2.server.entity.entities;
 
 import me.lofro.pelicano2.Main;
+import me.lofro.pelicano2.global.accessors.ServerPlayerEntityAccessor;
+import me.lofro.pelicano2.global.utils.OtherModUtils;
 import me.lofro.pelicano2.server.missions.MissionManager;
 import me.lofro.pelicano2.server.missions.missions.Missions;
 import net.minecraft.entity.EntityType;
@@ -11,13 +13,13 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -65,6 +67,7 @@ public class GuideMissionsEntity extends PathAwareEntity implements GeoEntity {
     @Override
     protected ActionResult interactMob(PlayerEntity player, Hand hand) {
         if (!this.getWorld().isClient) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             MissionManager missionManager = Main.getInstance().serverManager().getMissionManager();
             UUID playerUUID = player.getUuid();
 
@@ -74,7 +77,29 @@ public class GuideMissionsEntity extends PathAwareEntity implements GeoEntity {
                 ServerPlayerEntity serverPlayerEntity = Main.getInstance().serverManager().minecraftServer().getPlayerManager().getPlayer(playerUUID);
                 Main.getInstance().serverManager().getMissionManager().openAssignScreen(serverPlayerEntity, mission);
             } else {
-                player.sendMessage(Text.of("¡Ya hablaste conmigo!"));
+                if (missionManager.active(playerUUID, mission)) {
+                    switch(mission) {
+                        case DEFENDER_SYLMORIA -> {
+                            ServerPlayerEntityAccessor accessor = (ServerPlayerEntityAccessor) serverPlayer;
+
+                            if (accessor.planetaPelicano2$getSkeletonsKilled() >= 20 &&
+                                    accessor.planetaPelicano2$getZombiesKilled() >= 20 &&
+                                    accessor.planetaPelicano2$getSpidersKilled() >= 10 &&
+                                    accessor.planetaPelicano2$getCreepersKilled() >= 10) {
+                                missionManager.complete(mission, serverPlayer);
+                            } else {
+                                player.sendMessage(Text.literal("¡Aún no cazaste a los monstruos que te dije!").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal("Llevas:").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal(accessor.planetaPelicano2$getSkeletonsKilled() + "/20 esqueletos.").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal(accessor.planetaPelicano2$getZombiesKilled() + "/20 zombis.").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal(accessor.planetaPelicano2$getSpidersKilled() + "/10 arañas.").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal(accessor.planetaPelicano2$getSpidersKilled() + "/10 creepers.").formatted(Formatting.RED));
+                            }
+                        }
+                    }
+                } else {
+                    player.sendMessage(Text.of("¡Ya hablaste conmigo!"));
+                }
             }
         }
         return ActionResult.SUCCESS;
