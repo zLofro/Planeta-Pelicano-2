@@ -14,6 +14,8 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -114,10 +116,18 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
             if (this.isCookReady()) {
                 player.giveItemStack(ModItems.UPGRADE_BALL.getDefaultStack());
                 this.setCookReady(false);
+                this.cookingTicks = 0;
 
                 player.sendMessage(Text.literal("Has recibido un orbe de mejora.").formatted(Formatting.AQUA));
 
                 player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "taking_object_cauldron")), SoundCategory.MASTER, 1.0f, 1.0f);
+
+                MinecraftServer server = player.getServer();
+
+                if (server != null) {
+                    ServerCommandSource source =  server.getCommandSource().withLevel(4);
+                    server.getCommandManager().executeWithPrefix(source, "scoreboard players set $isobject particle_anim1");
+                }
             } else {
                 if (stack.isOf(ModItems.HUMAN_UPGRADE_POTION)) {
                     if (!this.isCooking()) {

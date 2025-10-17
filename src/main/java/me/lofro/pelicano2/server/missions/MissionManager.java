@@ -19,6 +19,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -81,15 +83,22 @@ public class MissionManager implements Restorable {
             this.missionData.getCompletedMissions().get(player.getUuid()).add(mission);
 
             removeActive(mission, player.getUuid());
-        }
 
-        player.sendMessage(Text.literal("¡Has completado exitosamente la misión " + mission.getTitle().getString()).formatted(Formatting.GREEN));
-        player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "complete_mission")), SoundCategory.MASTER, 1.0f, 1.0f);
+            player.sendMessage(Text.literal("¡Has completado exitosamente la misión " + mission.getTitle().getString()).formatted(Formatting.GREEN));
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "complete_mission")), SoundCategory.MASTER, 1.0f, 1.0f);
 
-        for (Pair<Item, Integer> reward : mission.getReward()) {
-            if (reward.getLeft() != null) {
-                player.giveItemStack(new ItemStack(reward.getLeft(), reward.getRight()));
-                player.sendMessage(Text.literal("Has recibido x" + reward.getRight() + " " + reward.getLeft().getName().getString()).formatted(Formatting.AQUA));
+            for (Pair<Item, Integer> reward : mission.getReward()) {
+                if (reward.getLeft() != null) {
+                    player.giveItemStack(new ItemStack(reward.getLeft(), reward.getRight()));
+                    player.sendMessage(Text.literal("Has recibido x" + reward.getRight() + " " + reward.getLeft().getName().getString()).formatted(Formatting.AQUA));
+                }
+            }
+
+            MinecraftServer server = player.getServer();
+
+            if (server != null) {
+                ServerCommandSource source =  server.getCommandSource().withLevel(4);
+                server.getCommandManager().executeWithPrefix(source, "scoreboard players set $ismision particle_anim1");
             }
         }
     }

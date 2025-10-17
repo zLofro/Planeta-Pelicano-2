@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -53,6 +54,8 @@ public class ServerReceivers {
             skillTreeManager.removeUpgradePoints(serverPlayerEntity.getUuid(), 1);
 
             serverPlayerEntity.sendMessage(Text.literal("¡Felicidades! Has mejorado tu habilidad de " + skill.name() + ".").formatted(Formatting.AQUA));
+            ServerCommandSource source = minecraftServer.getCommandSource().withLevel(4);
+            minecraftServer.getCommandManager().executeWithPrefix(source, "scoreboard players set $islevelup particle_anim1");
         });
 
         ServerPlayNetworking.registerGlobalReceiver(PacketIDS.CLICK_SELECTION_ICON_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
