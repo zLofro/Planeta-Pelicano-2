@@ -143,5 +143,50 @@
     "sounds": [
       "pelicano2:cat_appear"
     ]
+  },
+  "aldeanos_colombianos" : {
+    "sounds": [
+      "pelicano2:updates/aldeanos_colombianos"
+    ]
+  },
+  "aranias_multiplican" : {
+    "sounds": [
+      "pelicano2:updates/aranias_multiplican"
+    ]
+  },
+  "caida_items_danio" : {
+    "sounds": [
+      "pelicano2:updates/caida_items_danio"
+    ]
+  },
+  "calamares_hostiles" : {
+    "sounds": [
+      "pelicano2:updates/calamares_hostiles"
+    ]
+  },
+  "hambre_bajo_agua" : {
+    "sounds": [
+      "pelicano2:updates/hambre_bajo_agua"
+    ]
+  },
+  "illagers_mejorados" : {
+    "sounds": [
+      "pelicano2:updates/illagers_mejorados"
+    ]
+  },
+  "iron_golems_hostiles" : {
+    "sounds": [
+      "pelicano2:updates/iron_golems_hostiles"
+    ]
+  },
+  "suenio_desordenado" : {
+    "sounds": [
+      "pelicano2:updates/suenio_desordenado"
+    ]
+  },
+  "zombis_inmunes_sol" : {
+    "sounds": [
+      "pelicano2:updates/zombis_inmunes_sol"
+    ]
   }
 }

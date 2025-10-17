@@ -80,6 +80,13 @@ public class UpdatesManager implements Restorable {
                     world.setTimeOfDay(18_000);
 
                     minecraftServer.getPlayerManager().getPlayerList().forEach(player -> {
+
+                        SoundEvent updateSound = update.getSound();
+
+                        if (updateSound != null) {
+                            player.getWorld().playSound(null, player.getBlockPos(), updateSound, SoundCategory.MASTER, 1.0f, 1.0f);
+                        }
+
                         player.sendMessage(update.getSummary().copy().formatted(Formatting.DARK_PURPLE).styled(style -> style.withBold(true)));
                         player.sendMessage(update.description.copy().formatted(Formatting.LIGHT_PURPLE));
                         player.getWorld().playSound(null, player.getBlockPos(), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "update_message")), SoundCategory.MASTER, 1.0f, 1.0f);

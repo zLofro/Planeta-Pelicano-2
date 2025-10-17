@@ -44,17 +44,28 @@ public class CustomCatEntity extends MobEntity implements GeoEntity {
             return PlayState.CONTINUE;
         }
 
-        if (this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation() && !this.shouldExecuteAppearAnimation() && !this.shouldExecuteDisappearAnimation()) {
+        if (this.isInSneakingPose() && !this.handSwinging &&
+                !this.shouldExecuteSittingAnimation() &&
+                !this.shouldExecuteAppearAnimation() &&
+                !this.shouldExecuteDisappearAnimation()) {
+
             if (state.isMoving()) {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_move"));
             } else {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_idle"));
             }
             return PlayState.CONTINUE;
-        } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation() && !this.shouldExecuteAppearAnimation() && !this.shouldExecuteDisappearAnimation()) {
+        } else if (state.isMoving() && !this.isInSneakingPose() &&
+                !this.handSwinging &&
+                !this.shouldExecuteSittingAnimation() &&
+                !this.shouldExecuteAppearAnimation() &&
+                !this.shouldExecuteDisappearAnimation()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
             return PlayState.CONTINUE;
-        } else if (!this.handSwinging && !this.shouldExecuteSittingAnimation() && !this.shouldExecuteAppearAnimation() && !this.shouldExecuteDisappearAnimation()) {
+        } else if (!this.handSwinging &&
+                !this.shouldExecuteSittingAnimation() &&
+                !this.shouldExecuteAppearAnimation() &&
+                !this.shouldExecuteDisappearAnimation()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
             return PlayState.CONTINUE;
         }
@@ -79,6 +90,12 @@ public class CustomCatEntity extends MobEntity implements GeoEntity {
         } else if (this.shouldExecuteDisappearAnimation() && !shouldNotRender()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("desaparecer"));
             return PlayState.CONTINUE;
+        } else if (this.shouldPlayDance1() && !shouldNotRender()) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("baile_1"));
+            return PlayState.CONTINUE;
+        } else if (this.shouldPlayDance2() && !shouldNotRender()) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("idle2"));
+            return PlayState.CONTINUE;
         }
         return PlayState.STOP;
     }
@@ -102,5 +119,13 @@ public class CustomCatEntity extends MobEntity implements GeoEntity {
 
     private boolean shouldNotRender() {
         return this.getOffHandStack().isOf(Items.IRON_INGOT);
+    }
+
+    private boolean shouldPlayDance1() {
+        return this.getOffHandStack().isOf(Items.BOOK);
+    }
+
+    private boolean shouldPlayDance2() {
+        return this.getOffHandStack().isOf(Items.COMPASS);
     }
 }
