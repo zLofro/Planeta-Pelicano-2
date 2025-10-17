@@ -188,5 +188,10 @@
     "sounds": [
       "pelicano2:updates/zombis_inmunes_sol"
     ]
+  },
+  "salmones_hostiles" : {
+    "sounds": [
+      "pelicano2:updates/salmones_hostiles"
+    ]
   }
 }

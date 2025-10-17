@@ -15,12 +15,14 @@ public class ZombieEntityMixin {
 
     @Inject(method = "burnsInDaylight", at = @At("HEAD"), cancellable = true)
     private void noBurnUnderSun(CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(!Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.ZOMBIES_INMUNES_SOL)); // Nunca se queman
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
+            cir.setReturnValue(!Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.ZOMBIES_INMUNES_SOL)); // Nunca se queman
+        }
     }
 
     @Inject(method = "createZombieAttributes", at = @At("RETURN"), cancellable = true)
     private static void boostDamage(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
-        if (Main.getInstance() != null) {
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.ZOMBIES_INMUNES_SOL)) {
                 DefaultAttributeContainer.Builder builder = cir.getReturnValue();
                 double baseDamage = builder.build().getValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);

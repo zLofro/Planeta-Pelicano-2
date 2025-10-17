@@ -32,7 +32,7 @@ public class SquidEntityMixin extends MobEntity {
 
     @Inject(at = @At("HEAD"), method = "initGoals")
     public void addAttackGoal(CallbackInfo ci) {
-        if (Main.getInstance() != null) {
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates()
                     .contains(Updates.CALAMARES_HOSTILES)) {
 

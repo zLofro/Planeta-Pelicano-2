@@ -19,7 +19,7 @@ public class HungerManagerMixin {
 
     @Inject(method = "update", at = @At("HEAD"))
     private void onUpdate(PlayerEntity player, CallbackInfo ci) {
-        if (Main.getInstance() != null) {
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.HAMBRE_BAJO_AGUA)) {
                 // Solo aplica a jugadores vivos y en mundos donde el hambre esté habilitado
                 if (player instanceof ServerPlayerEntity serverPlayer &&

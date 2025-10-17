@@ -81,6 +81,9 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
         } else if (this.shouldExecuteAppearAnimation() && !shouldNotRender()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("appear"));
             return PlayState.CONTINUE;
+        } else if (this.shouldExecuteDisappearAnimation() && !shouldNotRender()) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("desaparecer"));
+            return PlayState.CONTINUE;
         } else if (this.shouldPlayDance1() && !shouldNotRender()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("baile_1hhh"));
             return PlayState.CONTINUE;
@@ -101,11 +104,15 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
     }
 
     private boolean shouldExecuteAppearAnimation() {
-        return this.getOffHandStack().isOf(Items.BLAZE_ROD);
+        return this.getOffHandStack().isOf(Items.NAUTILUS_SHELL);
+    }
+
+    private boolean shouldExecuteDisappearAnimation() {
+        return this.getOffHandStack().isOf(Items.STICK);
     }
 
     private boolean shouldNotRender() {
-        return this.getOffHandStack().isOf(Items.IRON_INGOT);
+        return this.getOffHandStack().isOf(Items.FLINT);
     }
 
     private boolean shouldPlayDance1() {

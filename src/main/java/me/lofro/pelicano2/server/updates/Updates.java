@@ -20,7 +20,7 @@ public enum Updates {
     CAIDA_ITEMS(Text.of("Cada vez que recibes daño hay un 1% de probabilidad de que un objeto de tu mochila caiga al suelo. Cualquier golpe puede hacerte perder algo valioso."),
             Text.of("CAIDA DE ITEMS AL RECIBIR DAÑO"), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "caida_items_danio"))),
     HOSTILE_SALMONS(Text.of("Matar un salmón desencadena su venganza. Una horda de salmones hostiles aparece para atacarte. Pescar ya no es una opción tranquila."),
-            Text.of("EL SALMÓN RECLUTA UNA HORDA"), null),
+            Text.of("EL SALMÓN RECLUTA UNA HORDA"), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "salmones_hostiles"))),
     HAMBRE_BAJO_AGUA(Text.of("Mientras estés sumergido, tu barra de hambre disminuirá un 40% más rápido. Bucear demasiado tiempo se vuelve un riesgo mortal."),
             Text.of("BAJO EL AGUA EL HAMBRE AUMENTA"), SoundEvent.of(new Identifier(ModConstants.MOD_ID, "hambre_bajo_agua"))),
     ALDEANOS_COLOMBIANOS(Text.of("Los aldeanos adoptan “costumbres locales”: tienen un 30% de probabilidad de estafarte, vendiéndote basura por precios absurdos. Comercio bajo tu propio riesgo."),

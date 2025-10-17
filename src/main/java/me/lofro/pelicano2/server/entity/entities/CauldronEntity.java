@@ -39,7 +39,7 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
     private static final TrackedData<Boolean> COOKING = DataTracker.registerData(CauldronEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Boolean> COOK_READY = DataTracker.registerData(CauldronEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
-    final int COOKING_TIME_TICKS = 120 * 20;
+    final int COOKING_TIME_TICKS = 1200 * 20;
 
     int cookingTicks = 0;
 

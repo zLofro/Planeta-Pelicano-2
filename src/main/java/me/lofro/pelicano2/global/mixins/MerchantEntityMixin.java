@@ -23,22 +23,24 @@ public class MerchantEntityMixin {
 
     @Inject(method = "trade", at = @At("HEAD"), cancellable = true)
     private void onTrade(TradeOffer offer, CallbackInfo ci) {
-        if (offer == null || Main.getInstance() == null) return;
+        if (offer == null) return;
 
-        if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.ALDEANOS_COLOMBIANOS)) {
-            // 30% de probabilidad de "estafa"
-            if (RANDOM.nextDouble() < 0.3) {
-                // Marca la oferta como usada (consume los ítems que el jugador entregó)
-                offer.use();
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
+            if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.ALDEANOS_COLOMBIANOS)) {
+                // 30% de probabilidad de "estafa"
+                if (RANDOM.nextDouble() < 0.3) {
+                    // Marca la oferta como usada (consume los ítems que el jugador entregó)
+                    offer.use();
 
-                // Intentamos obtener el jugador que comerciaba con el merchant
-                PlayerEntity player = ((MerchantEntity) (Object) this).getCustomer();
-                if (player != null) {
-                    player.sendMessage(Text.literal("¡El aldeano es colombiano y te estafo!").formatted(Formatting.RED));
+                    // Intentamos obtener el jugador que comerciaba con el merchant
+                    PlayerEntity player = ((MerchantEntity) (Object) this).getCustomer();
+                    if (player != null) {
+                        player.sendMessage(Text.literal("¡El aldeano es colombiano y te estafo!").formatted(Formatting.RED));
+                    }
+
+                    // Cancelamos la ejecución normal del trade para que no se entregue el resultado.
+                    ci.cancel();
                 }
-
-                // Cancelamos la ejecución normal del trade para que no se entregue el resultado.
-                ci.cancel();
             }
         }
     }

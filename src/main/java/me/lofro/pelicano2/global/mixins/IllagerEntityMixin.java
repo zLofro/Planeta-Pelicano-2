@@ -35,7 +35,7 @@ public class IllagerEntityMixin extends PatrolEntity {
     private void onTick(CallbackInfo ci) {
         if (this.getWorld().isClient) return;
 
-        if (Main.getInstance() != null) {
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.ILLAGERS_FUEGO)) {
                 ServerWorld world = (ServerWorld) this.getWorld();
 

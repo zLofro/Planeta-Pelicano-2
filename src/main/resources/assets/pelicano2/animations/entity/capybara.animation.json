@@ -1724,6 +1724,67 @@
 				}
 			}
 		},
+		"desaparecer": {
+			"animation_length": 2,
+			"bones": {
+				"root": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"scale": {
+						"1.0": {
+							"vector": [1, 1, 1]
+						},
+						"1.5": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"body": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.5": {
+							"vector": [17.5, 0, 0]
+						}
+					}
+				},
+				"right_arm": {
+					"rotation": {
+						"1.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.3": {
+							"vector": [0, 0, 77.5]
+						}
+					}
+				},
+				"left_arm": {
+					"rotation": {
+						"1.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.3": {
+							"vector": [0, 0, -77.5]
+						}
+					}
+				},
+				"particles2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"particles": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
 		"nada": {
 			"loop": true,
 			"animation_length": 1,

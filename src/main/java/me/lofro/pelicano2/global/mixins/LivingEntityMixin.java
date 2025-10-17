@@ -39,11 +39,13 @@ public abstract class LivingEntityMixin extends Entity {
         if (source.getAttacker() instanceof PlayerEntity player) {
             if (!this.getWorld().isClient) {
 
-                int level = Main.getInstance().serverManager().getSkillTreeManager().getSkillLevel(player.getUuid(), Skills.STRENGTH);
+                if (Main.getInstance() != null) {
+                    int level = Main.getInstance().serverManager().getSkillTreeManager().getSkillLevel(player.getUuid(), Skills.STRENGTH);
 
-                // Escalado lineal: nivel 10 = x2 daño
-                float multiplier = 1.0F + (level / 10.0F);
-                return amount * multiplier;
+                    // Escalado lineal: nivel 10 = x2 daño
+                    float multiplier = 1.0F + (level / 10.0F);
+                    return amount * multiplier;
+                }
             }
         }
         return amount;
@@ -60,11 +62,13 @@ public abstract class LivingEntityMixin extends Entity {
         if (self instanceof PlayerEntity player) {
             if (!this.getWorld().isClient) {
 
-                int level = Main.getInstance().serverManager().getSkillTreeManager().getSkillLevel(player.getUuid(), Skills.RESISTANCE);
+                if (Main.getInstance() != null) {
+                    int level = Main.getInstance().serverManager().getSkillTreeManager().getSkillLevel(player.getUuid(), Skills.RESISTANCE);
 
-                // Escalado lineal: nivel 10 = x2 daño
-                float multiplier = 1.0F - (level / 20.0F); // 10 → 0.5
-                return amount * multiplier;
+                    // Escalado lineal: nivel 10 = x2 daño
+                    float multiplier = 1.0F - (level / 20.0F); // 10 → 0.5
+                    return amount * multiplier;
+                }
             }
         }
         return amount;
@@ -72,7 +76,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "onDeath", at = @At("TAIL"))
     private void onDeath(DamageSource source, CallbackInfo ci) {
-        if (Main.getInstance() != null) {
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             LivingEntity entity = (LivingEntity) (Object) this;
             World world = entity.getWorld();
             if (!world.isClient) {

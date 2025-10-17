@@ -104,7 +104,7 @@ public class ServerPlayerEntityMixin implements ServerPlayerEntityAccessor {
 
     @Inject(method = "damage", at = @At("TAIL"))
     private void onPlayerDamaged(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (Main.getInstance() != null) {
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.CAIDA_ITEMS)) {
                 ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 
@@ -133,7 +133,7 @@ public class ServerPlayerEntityMixin implements ServerPlayerEntityAccessor {
 
     @Inject(method = "wakeUp(ZZ)V", at = @At("TAIL"))
     private void onWakeUp(boolean skipSleepTimer, boolean updateSleepingPlayers, CallbackInfo ci) {
-        if (random.nextDouble() < 0.3 && Main.getInstance() != null) {
+        if (random.nextDouble() < 0.3 && Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.SUENIO_DESORDENADO)) {
                 ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
                 DefaultedList<ItemStack> items = player.getInventory().main;

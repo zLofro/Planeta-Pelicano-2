@@ -114,11 +114,11 @@ public class CustomCatEntity extends MobEntity implements GeoEntity {
     }
 
     private boolean shouldExecuteAppearAnimation() {
-        return this.getOffHandStack().isOf(Items.BLAZE_ROD);
+        return this.getOffHandStack().isOf(Items.NAUTILUS_SHELL);
     }
 
     private boolean shouldNotRender() {
-        return this.getOffHandStack().isOf(Items.IRON_INGOT);
+        return this.getOffHandStack().isOf(Items.FLINT);
     }
 
     private boolean shouldPlayDance1() {

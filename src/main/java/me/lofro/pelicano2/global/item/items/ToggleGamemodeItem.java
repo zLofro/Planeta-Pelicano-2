@@ -30,7 +30,7 @@ public class ToggleGamemodeItem extends Item {
         ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) user;
         boolean toggleToSpectator = serverPlayerEntity.interactionManager.isCreative();
 
-        serverPlayerEntity.setStackInHand(Hand.OFF_HAND, toggleToSpectator ? new ItemStack(Items.STICK) : new ItemStack(Items.BLAZE_ROD));
+        serverPlayerEntity.setStackInHand(Hand.OFF_HAND, toggleToSpectator ? new ItemStack(Items.STICK) : new ItemStack(Items.NAUTILUS_SHELL));
 
         ItemStack stackInHand = serverPlayerEntity.getStackInHand(hand);
 
@@ -46,7 +46,7 @@ public class ToggleGamemodeItem extends Item {
                 if (serverPlayerEntity.getServer() != null) {
                     serverPlayerEntity.getServer().execute(() -> {
                         serverPlayerEntity.changeGameMode(toggleToSpectator ? GameMode.SPECTATOR : GameMode.CREATIVE);
-                        serverPlayerEntity.setStackInHand(Hand.OFF_HAND, toggleToSpectator ? new ItemStack(Items.IRON_INGOT) : new ItemStack(Items.AIR));
+                        serverPlayerEntity.setStackInHand(Hand.OFF_HAND, toggleToSpectator ? new ItemStack(Items.FLINT) : new ItemStack(Items.AIR));
                     });
                 }
             }

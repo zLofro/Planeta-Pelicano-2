@@ -23,7 +23,7 @@ public class IronGolemEntityMixin extends GolemEntity {
 
     @Inject(at = @At("HEAD"), method = "initGoals")
     public void addAttackGoal(CallbackInfo ci) {
-        if (Main.getInstance() != null) {
+        if (Main.getInstance() != null && Main.getInstance().serverManager() != null && Main.getInstance().serverManager().getUpdatesManager() != null) {
             if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates()
                     .contains(Updates.IRON_GOLEM_HOSTILES)) {
 
