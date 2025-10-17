@@ -39,17 +39,21 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
     }
 
     private <E extends GeoEntity> PlayState movementPredicate(AnimationState<E> state) {
-        if (this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation()) {
+        if (shouldNotRender()) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("nada"));
+            return PlayState.CONTINUE;
+        }
+        if (this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation() && !this.shouldExecuteAppearAnimation()) {
             if (state.isMoving()) {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_move"));
             } else {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_idle"));
             }
             return PlayState.CONTINUE;
-        } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation()) {
+        } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation() && !this.shouldExecuteAppearAnimation()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
             return PlayState.CONTINUE;
-        } else if (!this.handSwinging && !this.shouldExecuteSittingAnimation()) {
+        } else if (!this.handSwinging && !this.shouldExecuteSittingAnimation() && !this.shouldExecuteAppearAnimation()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
             return PlayState.CONTINUE;
         }
@@ -57,7 +61,7 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
     }
 
     private <E extends GeoEntity> PlayState attackPredicate(AnimationState<E> state) {
-        if (this.handSwinging) {
+        if (this.handSwinging && !shouldNotRender()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("attack"));
             return PlayState.CONTINUE;
         }
@@ -65,8 +69,11 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
     }
 
     private <E extends GeoEntity> PlayState customAnimationPredicate(AnimationState<E> state) {
-        if (this.shouldExecuteSittingAnimation()) {
+        if (this.shouldExecuteSittingAnimation() && !shouldNotRender()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("sit"));
+            return PlayState.CONTINUE;
+        } else if (this.shouldExecuteAppearAnimation() && !shouldNotRender()) {
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("appear"));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
@@ -80,4 +87,13 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
     private boolean shouldExecuteSittingAnimation() {
         return this.getOffHandStack().isOf(Items.PAPER);
     }
+
+    private boolean shouldExecuteAppearAnimation() {
+        return this.getOffHandStack().isOf(Items.BLAZE_ROD);
+    }
+
+    private boolean shouldNotRender() {
+        return this.getOffHandStack().isOf(Items.IRON_INGOT);
+    }
+
 }

@@ -8,11 +8,16 @@
     "IronGolemEntityMixin",
     "LivingEntityMixin",
     "MerchantEntityMixin",
+    "ServerInteractionManagerMixin",
     "ServerPlayerEntityMixin",
     "SquidEntityMixin",
     "ZombieEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  },
+  "client": [
+    "ClientPlayerInteractionManagerMixin",
+    "ItemRendererMixin"
+  ]
 }

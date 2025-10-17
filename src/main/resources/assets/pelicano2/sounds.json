@@ -133,5 +133,15 @@
     "sounds": [
       "pelicano2:taking_object_cauldron"
     ]
+  },
+  "capybara_appear" : {
+    "sounds": [
+      "pelicano2:capybara_appear"
+    ]
+  },
+  "cat_appear" : {
+    "sounds": [
+      "pelicano2:cat_appear"
+    ]
   }
 }
