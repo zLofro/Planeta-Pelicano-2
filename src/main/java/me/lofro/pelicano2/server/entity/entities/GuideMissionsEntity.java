@@ -93,7 +93,7 @@ public class GuideMissionsEntity extends PathAwareEntity implements GeoEntity {
                                 player.sendMessage(Text.literal(accessor.planetaPelicano2$getSkeletonsKilled() + "/20 esqueletos.").formatted(Formatting.RED));
                                 player.sendMessage(Text.literal(accessor.planetaPelicano2$getZombiesKilled() + "/20 zombis.").formatted(Formatting.RED));
                                 player.sendMessage(Text.literal(accessor.planetaPelicano2$getSpidersKilled() + "/10 arañas.").formatted(Formatting.RED));
-                                player.sendMessage(Text.literal(accessor.planetaPelicano2$getSpidersKilled() + "/10 creepers.").formatted(Formatting.RED));
+                                player.sendMessage(Text.literal(accessor.planetaPelicano2$getCreepersKilled() + "/10 creepers.").formatted(Formatting.RED));
                             }
                         }
                     }

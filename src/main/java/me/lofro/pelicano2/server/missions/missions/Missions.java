@@ -27,7 +27,7 @@ public enum Missions {
             false,
             new Identifier(ModConstants.MOD_ID, "guide"),
             Text.literal("Construye tu casa y hazla habitable").styled(s -> s.withColor(0x444444)).append(Text.literal(" \uE101 \uE106 \uE107").formatted(Formatting.WHITE))),
-    DEFENDER_SYLMORIA(new Pair[]{new Pair<>(OtherModUtils.getOtherModItem("waystones", "waystone"), 1), new Pair<>(ModItems.HUMAN_UPGRADE_POTION, 2)},
+    DEFENDER_SYLMORIA(new Pair[]{new Pair<>(OtherModUtils.getOtherModItem("waystones", "waystone"), 1), new Pair<>(ModItems.HUMAN_UPGRADE_POTION, 1)},
             Text.of("Defender Sylmoria"), Text.of("""
             Tras meses de abandono, Sylmoria cayó en manos de enemigos y criaturas ocultas en la oscuridad. Nuestro hogar ahora es tierra hostil.
             

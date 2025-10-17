@@ -102,7 +102,8 @@ public abstract class LivingEntityMixin extends Entity {
                             }
                         }
                     }
-                } else if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.HOSTILE_SALMONS)) {
+                }
+                if (Main.getInstance().serverManager().getUpdatesManager().getUpdatesData().getCurrentUpdates().contains(Updates.HOSTILE_SALMONS)) {
                     if (entity instanceof SalmonEntity && !ModEntities.ANGRY_SALMON.equals(entity.getType())) {
                         AngrySalmonEntity.spawnHorde(serverWorld, entity, 6);
                     }
