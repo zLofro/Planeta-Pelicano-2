@@ -55,7 +55,7 @@ public class ServerReceivers {
 
             serverPlayerEntity.sendMessage(Text.literal("¡Felicidades! Has mejorado tu habilidad de " + skill.name() + ".").formatted(Formatting.AQUA));
             ServerCommandSource source = minecraftServer.getCommandSource().withLevel(4);
-            minecraftServer.getCommandManager().executeWithPrefix(source, "scoreboard players set $islevelup particle_anim1");
+            minecraftServer.getCommandManager().executeWithPrefix(source, "/scoreboard players set $islevelup particle_anim 1");
         });
 
         ServerPlayNetworking.registerGlobalReceiver(PacketIDS.CLICK_SELECTION_ICON_C2S, (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {

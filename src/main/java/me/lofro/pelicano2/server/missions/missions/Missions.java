@@ -91,7 +91,7 @@ public enum Missions {
              true,
             new Identifier(ModConstants.MOD_ID, "textures/entity/npc/anastasia_white.png"),
             Text.literal("Recolecta 64 de hilo").styled(s -> s.withColor(0x444444)).append(Text.literal(" \uE100").formatted(Formatting.WHITE))),
-    DULCE_REMEDIO(new Pair[]{new Pair<>(Items.GOLDEN_CARROT, 5), new Pair<>(OtherModUtils.getOtherModItem("promenade", "cooked_duck"), 1)},
+    DULCE_REMEDIO(new Pair[]{new Pair<>(Items.GOLDEN_CARROT, 5), new Pair<>(OtherModUtils.getOtherModItem("", "cooked_duck"), 1)},
             Text.of("Dulce remedio"), Text.of("""
             Dicen que nada calma mejor las penas que la miel. Su sabor único me da la energía para seguir trabajando; sin ella, mis días se vuelven pesados.
             

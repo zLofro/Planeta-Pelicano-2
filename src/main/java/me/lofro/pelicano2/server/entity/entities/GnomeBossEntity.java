@@ -39,14 +39,18 @@ public class GnomeBossEntity extends MobEntity implements GeoEntity {
     }
 
     private <E extends GeoEntity> PlayState movementPredicate(AnimationState<E> state) {
+        double velocitySq = this.getVelocity().horizontalLengthSquared();
+
+        boolean isMoving = velocitySq > 0.001; // ajusta el umbral si la animación "tiembla"
+
         if (this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation()) {
-            if (state.isMoving()) {
+            if (isMoving) {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_move"));
             } else {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_idle"));
             }
             return PlayState.CONTINUE;
-        } else if (state.isMoving() && !this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation()) {
+        } else if (isMoving && !this.isInSneakingPose() && !this.handSwinging && !this.shouldExecuteSittingAnimation()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
             return PlayState.CONTINUE;
         } else if (!this.handSwinging && !this.shouldExecuteSittingAnimation()) {

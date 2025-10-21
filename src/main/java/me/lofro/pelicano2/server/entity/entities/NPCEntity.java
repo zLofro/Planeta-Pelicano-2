@@ -110,7 +110,7 @@ public class NPCEntity extends PathAwareEntity implements GeoEntity {
                             }
                         }
                         case EL_ANTOJO_IMPOSIBLE -> {
-                            Pair<Item, Integer>[] itemsNeeded = new Pair[]{new Pair<>(OtherModUtils.getOtherModItem("supplementaries", "candy"), 64)};
+                            Pair<Item, Integer>[] itemsNeeded = new Pair[]{new Pair<>(Items.POTATO, 64)};
                             if (missionManager.hasAllItems(serverPlayer, itemsNeeded)) {
                                 missionManager.consumeRecipeItems(serverPlayer, itemsNeeded);
                                 missionManager.complete(mission, serverPlayer);

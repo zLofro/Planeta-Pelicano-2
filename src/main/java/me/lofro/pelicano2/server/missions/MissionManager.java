@@ -98,7 +98,7 @@ public class MissionManager implements Restorable {
 
             if (server != null) {
                 ServerCommandSource source =  server.getCommandSource().withLevel(4);
-                server.getCommandManager().executeWithPrefix(source, "scoreboard players set $ismision particle_anim1");
+                server.getCommandManager().executeWithPrefix(source, "/scoreboard players set $ismision particle_anim 1");
             }
         }
     }

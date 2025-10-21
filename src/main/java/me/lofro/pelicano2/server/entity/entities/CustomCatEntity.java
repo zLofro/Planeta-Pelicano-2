@@ -44,18 +44,22 @@ public class CustomCatEntity extends MobEntity implements GeoEntity {
             return PlayState.CONTINUE;
         }
 
+        double velocitySq = this.getVelocity().horizontalLengthSquared();
+
+        boolean isMoving = velocitySq > 0.001; // ajusta el umbral si la animación "tiembla"
+
         if (this.isInSneakingPose() && !this.handSwinging &&
                 !this.shouldExecuteSittingAnimation() &&
                 !this.shouldExecuteAppearAnimation() &&
                 !this.shouldExecuteDisappearAnimation()) {
 
-            if (state.isMoving()) {
+            if (isMoving) {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_move"));
             } else {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crouch_idle"));
             }
             return PlayState.CONTINUE;
-        } else if (state.isMoving() && !this.isInSneakingPose() &&
+        } else if (isMoving && !this.isInSneakingPose() &&
                 !this.handSwinging &&
                 !this.shouldExecuteSittingAnimation() &&
                 !this.shouldExecuteAppearAnimation() &&

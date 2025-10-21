@@ -126,7 +126,7 @@ public class CauldronEntity extends PathAwareEntity implements GeoEntity {
 
                 if (server != null) {
                     ServerCommandSource source =  server.getCommandSource().withLevel(4);
-                    server.getCommandManager().executeWithPrefix(source, "scoreboard players set $isobject particle_anim1");
+                    server.getCommandManager().executeWithPrefix(source, "/scoreboard players set $isobject particle_anim 1");
                 }
             } else {
                 if (stack.isOf(ModItems.HUMAN_UPGRADE_POTION)) {

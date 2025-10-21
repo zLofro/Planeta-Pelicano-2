@@ -44,15 +44,19 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
             return PlayState.CONTINUE;
         }
 
+        double velocitySq = this.getVelocity().horizontalLengthSquared();
+
+        boolean isMoving = velocitySq > 0.001; // ajusta el umbral si la animación "tiembla"
+
         if (this.isInSneakingPose() && !this.handSwinging &&
                 !this.shouldExecuteSittingAnimation() && !this.shouldExecuteAppearAnimation()) {
-            if (state.isMoving()) {
+            if (isMoving) {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crunch_move"));
             } else {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("crunch_idle"));
             }
             return PlayState.CONTINUE;
-        } else if (state.isMoving() && !this.isInSneakingPose() &&
+        } else if (isMoving && !this.isInSneakingPose() &&
                 !this.handSwinging && !this.shouldExecuteSittingAnimation() &&
                 !this.shouldExecuteAppearAnimation()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
@@ -81,7 +85,7 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
         } else if (this.shouldExecuteAppearAnimation() && !shouldNotRender()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("appear"));
             return PlayState.CONTINUE;
-        } else if (this.shouldExecuteDisappearAnimation() && !shouldNotRender()) {
+        }else if (this.shouldExecuteDisappearAnimation() && !shouldNotRender()) {
             state.getController().setAnimation(RawAnimation.begin().thenLoop("desaparecer"));
             return PlayState.CONTINUE;
         } else if (this.shouldPlayDance1() && !shouldNotRender()) {
@@ -103,12 +107,12 @@ public class CapybaraEntity extends MobEntity implements GeoEntity {
         return this.getOffHandStack().isOf(Items.PAPER);
     }
 
-    private boolean shouldExecuteAppearAnimation() {
-        return this.getOffHandStack().isOf(Items.NAUTILUS_SHELL);
-    }
-
     private boolean shouldExecuteDisappearAnimation() {
         return this.getOffHandStack().isOf(Items.STICK);
+    }
+
+    private boolean shouldExecuteAppearAnimation() {
+        return this.getOffHandStack().isOf(Items.NAUTILUS_SHELL);
     }
 
     private boolean shouldNotRender() {
