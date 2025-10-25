@@ -9,6 +9,7 @@ public class EntityRenderRegistries {
     public static void register() {
         EntityRendererRegistry.register(ModEntities.CUSTOM_CAT, CustomCatRenderer::new);
         EntityRendererRegistry.register(ModEntities.CAPYBARA, CapybaraRenderer::new);
+        EntityRendererRegistry.register(ModEntities.CAPYBARA_FARMER, CapybaraFarmerRenderer::new);
         EntityRendererRegistry.register(ModEntities.NICTE, NicteRenderer::new);
         EntityRendererRegistry.register(ModEntities.NICTE_MISSIONS, NicteMissionsRenderer::new);
         EntityRendererRegistry.register(ModEntities.GNOME, GnomeRenderer::new);

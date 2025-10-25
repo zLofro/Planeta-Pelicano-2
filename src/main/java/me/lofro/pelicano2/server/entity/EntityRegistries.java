@@ -8,6 +8,7 @@ public class EntityRegistries {
     public static void register() {
         FabricDefaultAttributeRegistry.register(ModEntities.CUSTOM_CAT, CustomCatEntity.createCustomCatAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.CAPYBARA, CapybaraEntity.createCapybaraAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.CAPYBARA_FARMER, CapybaraFarmerEntity.createCapybaraAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.NICTE, NicteEntity.createNicteAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.NICTE_MISSIONS, NicteMissionsEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.GNOME, GnomeEntity.createGnomeAttributes());

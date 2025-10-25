@@ -28,6 +28,14 @@ public class ModEntities {
                     .build()
     );
 
+    public static final EntityType<CapybaraFarmerEntity> CAPYBARA_FARMER = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(ModConstants.MOD_ID, "capybara_farmer"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, CapybaraFarmerEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.6f, 0.8f))
+                    .build()
+    );
+
     public static final EntityType<NicteEntity> NICTE = Registry.register(
             Registries.ENTITY_TYPE,
             new Identifier(ModConstants.MOD_ID, "nicte"),
